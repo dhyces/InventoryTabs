@@ -1,10 +1,10 @@
 package com.kqp.inventorytabs.tabs.tab;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 /**
  * Tab for the player's inventory.
@@ -16,7 +16,7 @@ public class PlayerInventoryTab extends Tab {
 
     @Override
     public void open() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         client.setScreen(new InventoryScreen(client.player));
     }
 
@@ -26,8 +26,8 @@ public class PlayerInventoryTab extends Tab {
     }
 
     @Override
-    public Text getHoverText() {
-        return Text.literal("Inventory");
+    public Component getHoverText() {
+        return Component.literal("Inventory");
     }
 
     @Override
@@ -42,8 +42,8 @@ public class PlayerInventoryTab extends Tab {
 
     private static ItemStack getRenderItemStack() {
         ItemStack itemStack = new ItemStack(Blocks.PLAYER_HEAD);
-        itemStack.getOrCreateNbt().putString("SkullOwner",
-                MinecraftClient.getInstance().player.getGameProfile().getName());
+        itemStack.getOrCreateTag().putString("SkullOwner",
+                Minecraft.getInstance().player.getGameProfile().getName());
 
         return itemStack;
     }

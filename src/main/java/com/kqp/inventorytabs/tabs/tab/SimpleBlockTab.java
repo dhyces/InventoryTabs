@@ -2,99 +2,100 @@ package com.kqp.inventorytabs.tabs.tab;
 
 import java.util.Objects;
 
-import com.kqp.inventorytabs.init.InventoryTabs;
+import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.tabs.provider.BlockTabProvider;
 import com.kqp.inventorytabs.util.BlockUtil;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.argument.EntityAnchorArgumentType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Generic tab for blocks.
  */
 public class SimpleBlockTab extends Tab {
-    public final Identifier blockId;
+    public final ResourceLocation blockId;
     public final BlockPos blockPos;
 
-    public SimpleBlockTab(Identifier blockId, BlockPos blockPos) {
-        super(new ItemStack(MinecraftClient.getInstance().player.world.getBlockState(blockPos).getBlock()));
+    public SimpleBlockTab(ResourceLocation blockId, BlockPos blockPos) {
+        super(new ItemStack(Minecraft.getInstance().level.getBlockState(blockPos).getBlock()));
         this.blockId = blockId;
         this.blockPos = blockPos;
     }
 
     @Override
     public void open() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        BlockHitResult hitResult = null;
+        Minecraft client = Minecraft.getInstance();
+        BlockHitResult hitResult;
 
-        if (InventoryTabs.getConfig().doSightChecksFlag) {
+        if (InventoryTabsConfig.doSightChecksFlag.get()) {
             hitResult = BlockUtil.getLineOfSight(blockPos, client.player, 5D);
         } else {
-            hitResult = new BlockHitResult(Vec3d.ofCenter(blockPos), Direction.EAST, blockPos, false);
+            hitResult = new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.EAST, blockPos, false);
         }
 
         if (hitResult != null) {
-            if (InventoryTabs.getConfig().rotatePlayer) {
-                MinecraftClient.getInstance().player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
-                        Vec3d.ofCenter(blockPos));
+            if (InventoryTabsConfig.rotatePlayer.get()) {
+                Minecraft.getInstance().player.lookAt(EntityAnchorArgument.Anchor.EYES,
+                        Vec3.atCenterOf(blockPos));
             }
 
-            MinecraftClient.getInstance().interactionManager.interactBlock(client.player,
-                    Hand.MAIN_HAND, hitResult);
+            Minecraft.getInstance().gameMode.useItemOn(client.player,
+                    InteractionHand.MAIN_HAND, hitResult);
         }
     }
 
     @Override
     public boolean shouldBeRemoved() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
 
-        if (!Registry.BLOCK.getId(player.world.getBlockState(blockPos).getBlock()).equals(blockId)) {
+        if (!Objects.equals(ForgeRegistries.BLOCKS.getKey(player.level.getBlockState(blockPos).getBlock()), blockId)) {
             return true;
         }
 
-        if (InventoryTabs.getConfig().doSightChecksFlag) {
+        if (InventoryTabsConfig.doSightChecksFlag.get()) {
             if (BlockUtil.getLineOfSight(blockPos, player, 5D) == null) {
                 return true;
             } else {
                 return !BlockUtil.inRange(blockPos, player, 5D);
             }
         }
-        Vec3d playerHead = player.getPos().add(0D, player.getEyeHeight(player.getPose()), 0D);
+        Vec3 playerHead = player.position().add(0D, player.getEyeHeight(player.getPose()), 0D);
 
-        return Vec3d.ofCenter(blockPos).subtract(playerHead).lengthSquared() > BlockTabProvider.SEARCH_DISTANCE
+        return Vec3.atCenterOf(blockPos).subtract(playerHead).lengthSqr() > BlockTabProvider.SEARCH_DISTANCE
                 * BlockTabProvider.SEARCH_DISTANCE;
 
     }
 
     @Override
-    public Text getHoverText() {
-        World world = MinecraftClient.getInstance().player.world;
+    public Component getHoverText() {
+        Level world = Minecraft.getInstance().level;
 
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
 
         if (blockEntity != null) {
-            NbtCompound tag = new NbtCompound();
-            blockEntity.writeNbt(tag); // had to use an accesswidener for this in 1.18
+            CompoundTag tag = new CompoundTag();
+            blockEntity.saveWithoutMetadata(); // had to use an accesswidener for this in 1.18
 
-            if (tag.contains("CustomName", 8)) {
-                return Text.Serializer.fromJson(tag.getString("CustomName"));
+            if (tag.contains("CustomName", Tag.TAG_STRING)) {
+                return Component.Serializer.fromJson(tag.getString("CustomName"));
             }
         }
 
-        return Text.translatable(world.getBlockState(blockPos).getBlock().getTranslationKey());
+        return Component.translatable(world.getBlockState(blockPos).getBlock().getDescriptionId());
 
     }
 

@@ -9,37 +9,37 @@ import com.kqp.inventorytabs.mixin.ShulkerBoxBlockInvoker;
 import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Provides tabs for shulker boxes. Takes into account if it's blocked.
  */
 public class ShulkerBoxTabProvider extends BlockTabProvider {
     @Override
-    public void addAvailableTabs(ClientPlayerEntity player, List<Tab> tabs) {
+    public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         super.addAvailableTabs(player, tabs);
 
         Set<SimpleBlockTab> tabsToRemove = new HashSet<>();
 
         List<SimpleBlockTab> shulkerTabs = tabs.stream().filter(tab -> tab instanceof SimpleBlockTab)
                 .map(tab -> (SimpleBlockTab) tab)
-                .filter(tab -> Registry.BLOCK.get(tab.blockId) instanceof ShulkerBoxBlock).collect(Collectors.toList());
+                .filter(tab -> ForgeRegistries.BLOCKS.getValue(tab.blockId) instanceof ShulkerBoxBlock).collect(Collectors.toList());
 
         // Add any chests that are blocked
         shulkerTabs.stream().filter(tab -> {
-            BlockEntity blockEntity = player.world.getBlockEntity(tab.blockPos);
+            BlockEntity blockEntity = player.level.getBlockEntity(tab.blockPos);
 
             if (blockEntity instanceof ShulkerBoxBlockEntity) {
-                BlockState blockState = player.world.getBlockState(tab.blockPos);
+                BlockState blockState = player.level.getBlockState(tab.blockPos);
 
-                return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.world, tab.blockPos,
+                return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.level, tab.blockPos,
                         (ShulkerBoxBlockEntity) blockEntity);
             }
 
@@ -50,12 +50,12 @@ public class ShulkerBoxTabProvider extends BlockTabProvider {
     }
 
     @Override
-    public boolean matches(World world, BlockPos pos) {
+    public boolean matches(Level world, BlockPos pos) {
         return world.getBlockState(pos).getBlock() instanceof ShulkerBoxBlock;
     }
 
     @Override
-    public Tab createTab(World world, BlockPos pos) {
-        return new SimpleBlockTab(Registry.BLOCK.getId(world.getBlockState(pos).getBlock()), pos);
+    public Tab createTab(Level world, BlockPos pos) {
+        return new SimpleBlockTab(ForgeRegistries.BLOCKS.getKey(world.getBlockState(pos).getBlock()), pos);
     }
 }

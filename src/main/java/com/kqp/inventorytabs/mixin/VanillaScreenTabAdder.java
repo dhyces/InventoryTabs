@@ -11,41 +11,35 @@ import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.ChestUtil;
 
-import net.fabricmc.loader.api.FabricLoader;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-@Environment(EnvType.CLIENT)
-@Mixin(HandledScreen.class)
+@Mixin(AbstractContainerScreen.class)
 public abstract class VanillaScreenTabAdder extends Screen implements TabRenderingHints {
-    private static final boolean isBRBLoaded = FabricLoader.getInstance().isModLoaded("brb"); // Better Recipe Book compat
+    private static final boolean isBRBLoaded = ModList.get().isLoaded("brb"); // Better Recipe Book compat
     
-    protected VanillaScreenTabAdder(Text title) {
+    protected VanillaScreenTabAdder(Component title) {
         super(title);
     }
 
     @Inject(method = "init", at = @At("HEAD"))
     private void initRestoreStack(CallbackInfo callbackInfo) {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         TabManager tabManager = ((TabManagerContainer) client).getTabManager();
         if (tabManager.screenOpenedViaTab()) {
-            tabManager.restoreCursorStack(client.interactionManager, client.player, ((HandledScreen<?>) (Object) this).getScreenHandler());
+            tabManager.restoreCursorStack(client.gameMode, client.player, ((AbstractContainerScreen<?>) (Object) this).getMenu());
             tabManager.tabOpenedRecently = true; // Preserve value for later
         }
     }
@@ -53,10 +47,10 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "init", at = @At("RETURN"))
     private void initTabRenderer(CallbackInfo callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
-            tabManager.onScreenOpen((HandledScreen<?>) (Object) this);
+            tabManager.onScreenOpen((AbstractContainerScreen<?>) (Object) this);
 
             Tab tabOpened = null;
 
@@ -66,15 +60,14 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
                 // If the screen was NOT opened via tab,
                 // check what block player is looking at for context
 
-                if (client.crosshairTarget instanceof BlockHitResult) {
-                    BlockHitResult blockHitResult = (BlockHitResult) client.crosshairTarget;
-                    BlockPos blockPos = blockHitResult.getBlockPos();
+                if (client.hitResult instanceof BlockHitResult blockHitResult) {
+                    var blockPos = blockHitResult.getBlockPos();
 
                     Set<BlockPos> matchingBlockPositions = new HashSet<>();
                     matchingBlockPositions.add(blockPos);
 
                     // For double chests
-                    World world = client.player.world;
+                    var world = client.level;
                     if (world.getBlockState(blockPos).getBlock() instanceof ChestBlock) {
                         if (ChestUtil.isDouble(world, blockPos)) {
                             matchingBlockPositions.add(ChestUtil.getOtherChestBlockPos(world, blockPos));
@@ -101,34 +94,34 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    protected void drawBackgroundTabs(MatrixStack matrices, int mouseX, int mouseY, float delta,
+    protected void drawBackgroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
             CallbackInfo callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
             if (!screenDoesDumbBlock()) {
-                MinecraftClient client = MinecraftClient.getInstance();
+                Minecraft client = Minecraft.getInstance();
                 TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
-                tabManager.tabRenderer.renderBackground(matrices);
+                tabManager.tabRenderer.renderBackground(poseStack);
             }
         }
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    protected void drawForegroundTabs(MatrixStack matrices, int mouseX, int mouseY, float delta,
-            CallbackInfo callbackInfo) {
+    protected void drawForegroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
+                                      CallbackInfo callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
-            tabManager.tabRenderer.renderForeground(matrices, mouseX, mouseY);
-            tabManager.tabRenderer.renderHoverTooltips(matrices, mouseX, mouseY);
+            tabManager.tabRenderer.renderForeground(poseStack, mouseX, mouseY);
+            tabManager.tabRenderer.renderHoverTooltips(poseStack, mouseX, mouseY);
         }
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            TabManager tabManager = ((TabManagerContainer) MinecraftClient.getInstance()).getTabManager();
+            TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
 
             if (tabManager.mouseClicked(mouseX, mouseY, button)) {
                 callbackInfo.setReturnValue(true);
@@ -139,7 +132,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            TabManager tabManager = ((TabManagerContainer) MinecraftClient.getInstance()).getTabManager();
+            TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
 
             if (tabManager.keyPressed(keyCode, scanCode, modifiers)) {
                 callbackInfo.setReturnValue(true);
@@ -150,17 +143,17 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Override
     public int getTopRowXOffset() {
         if (!isBRBLoaded) {
-            HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+            AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
             if (screen instanceof InventoryScreen) {
-                if (((InventoryScreen) screen).getRecipeBookWidget().isOpen()) {
+                if (((InventoryScreen) screen).getRecipeBookComponent().isVisible()) {
                     return 77;
                 }
             } else if (screen instanceof AbstractFurnaceScreen) {
-                if (((AbstractFurnaceScreen<?>) screen).recipeBook.isOpen()) {
+                if (((AbstractFurnaceScreen<?>) screen).recipeBookComponent.isVisible()) {
                     return 77;
                 }
             } else if (screen instanceof CraftingScreen) {
-                if (((CraftingScreen) screen).getRecipeBookWidget().isOpen()) {
+                if (((CraftingScreen) screen).getRecipeBookComponent().isVisible()) {
                     return 77;
                 }
             }
@@ -179,15 +172,15 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     }
     
     private boolean screenDoesDumbBlock() {
-        HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+        AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
 
         return screen instanceof CartographyTableScreen || screen instanceof LoomScreen
                 || screen instanceof StonecutterScreen;
     }
 
     private boolean screenNeedsOffset() {
-        HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+        AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
 
-        return screen instanceof ShulkerBoxScreen || screen instanceof GenericContainerScreen;
+        return screen instanceof ShulkerBoxScreen || screen instanceof ContainerScreen;
     }
 }

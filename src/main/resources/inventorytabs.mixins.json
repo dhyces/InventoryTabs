@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.kqp.inventorytabs.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "CartographyTableScreenTabAdder",
     "LoomScreenTabAdder",
@@ -10,14 +10,14 @@
     "StonecutterScreenTabAdder",
     "TabManagerContainerImplementer",
     "VanillaScreenTabAdder",
-    "accessor.HandledScreenAccessor",
+    "accessor.AbstractContainerScreenAccessor",
     "accessor.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "ControlsListWidget$KeyBindingEntryMixin_SoftConflict",
-    "KeyBindingMixin_SoftConflict"
+    "KeyBindsList$KeyEntryMixin_SoftConflict",
+    "KeyMappingMixin_SoftConflict"
   ]
 }

@@ -1,0 +1,14 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="MIT"
+issueTrackerURL="https://github.com/Andrew6rant/inventorytabs/issues"
+[[mods]]
+modId="inventorytabs"
+version="${file.jarVersion}"
+displayName="Inventory Tabs"
+displayURL="https://github.com/Andrew6rant/inventorytabs"
+logoFile="icon.png"
+authors="KQP, LiamMCW, Andrew6rant (Andrew Grant), dhyces"
+description='''
+Adds tabs to your inventory that lead to nearby blocks.
+'''
