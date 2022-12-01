@@ -47,7 +47,7 @@ public class InventoryTabs {
 //        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> TabProviderRegistry.init("reload"));
     }
 
-    private void playerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+    private void playerJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {
         TabProviderRegistry.init("load");
     }
 

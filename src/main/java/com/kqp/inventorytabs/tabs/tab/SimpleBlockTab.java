@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +54,7 @@ public class SimpleBlockTab extends Tab {
                         Vec3.atCenterOf(blockPos));
             }
 
-            Minecraft.getInstance().gameMode.useItemOn(client.player,
+            Minecraft.getInstance().gameMode.useItemOn(client.player, client.level,
                     InteractionHand.MAIN_HAND, hitResult);
         }
     }
@@ -95,7 +96,7 @@ public class SimpleBlockTab extends Tab {
             }
         }
 
-        return Component.translatable(world.getBlockState(blockPos).getBlock().getDescriptionId());
+        return new TranslatableComponent(world.getBlockState(blockPos).getBlock().getDescriptionId());
 
     }
 

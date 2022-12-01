@@ -10,13 +10,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.world.WorldEvent;
 
 public class InventoryTabsClient {
     public static final KeyMapping NEXT_TAB_KEY_BIND = new KeyMapping(
             "inventorytabs.key.next_tab", InputConstants.Type.KEYSYM, InputConstants.KEY_TAB, "key.categories.inventory");
-
-    private final TabManager tabManager = new TabManager();
 
     public static boolean serverDoSightCheckFlag = true;
 
@@ -25,8 +23,8 @@ public class InventoryTabsClient {
         MinecraftForge.EVENT_BUS.addListener(InventoryTabsClient::onWorldLoad);
     }
 
-    private static void onWorldLoad(LevelEvent.Load event) {
-        if (event.getLevel().isClientSide()) {
+    private static void onWorldLoad(WorldEvent.Load event) {
+        if (event.getWorld().isClientSide()) {
             Minecraft client = Minecraft.getInstance();
 
             if (client.screen != null) {

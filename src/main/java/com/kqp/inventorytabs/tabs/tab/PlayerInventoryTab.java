@@ -3,6 +3,7 @@ package com.kqp.inventorytabs.tabs.tab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -27,7 +28,7 @@ public class PlayerInventoryTab extends Tab {
 
     @Override
     public Component getHoverText() {
-        return Component.literal("Inventory");
+        return new TextComponent("Inventory");
     }
 
     @Override
