@@ -1,42 +1,42 @@
 package com.kqp.inventorytabs.tabs.tab;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class InventoryTab extends Tab {
-    public final Item itemId;
+    public final Item item;
     public InventoryTab(Item itemId) {
         super(new ItemStack(itemId));
-        this.itemId = itemId;
+        this.item = itemId;
     }
 
     @Override
     public void open() {
         System.out.println("TESTING: Opening inventory tab");
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        World world = MinecraftClient.getInstance().world;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        Level level = Minecraft.getInstance().level;
         System.out.println("Player: "+player);
-        System.out.println("World: "+world);
-        System.out.println("Item: "+itemId);
-        System.out.println("ItemStack: "+new ItemStack(itemId));
-        System.out.println("Active hand: "+player.getActiveHand());
-        Item item = new ItemStack(itemId).getItem();
-        item.use(world, player, player.getActiveHand());
+        System.out.println("Level: "+level);
+        System.out.println("Item: "+ item);
+        System.out.println("ItemStack: "+new ItemStack(item));
+        System.out.println("Used hand: "+player.getUsedItemHand());
+        Item item = new ItemStack(this.item).getItem();
+        item.use(level, player, player.getUsedItemHand());
         //itemId.use(world, player, player.getActiveHand());
     }
 
     @Override
     public boolean shouldBeRemoved() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        return (player == null || !player.getInventory().contains(new ItemStack(itemId)));
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        return (player == null || !player.getInventory().contains(new ItemStack(item)));
     }
 
     @Override
-    public Text getHoverText() {
-        return Text.literal(itemId.getName().getString());
+    public Component getHoverText() {
+        return Component.literal(item.getDescription().getString());
     }
 }

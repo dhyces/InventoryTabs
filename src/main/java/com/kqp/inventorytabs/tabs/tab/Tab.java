@@ -3,19 +3,19 @@ package com.kqp.inventorytabs.tabs.tab;
 import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Base interface for tabs.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class Tab {
     private final ItemStack renderItemStack;
 
@@ -41,7 +41,7 @@ public abstract class Tab {
      *
      * @return
      */
-    public abstract Text getHoverText();
+    public abstract Component getHoverText();
 
     /**
      * Called when the screen associated with the tab is closed.
@@ -62,18 +62,18 @@ public abstract class Tab {
     /**
      * Renders the tab's icon
      *
-     * @param matrices      MatrixStack
+     * @param poseStack      PoseStack
      * @param tabRenderInfo TabRenderInfo
-     * @param currentScreen HandledScreen
+     * @param currentScreen AbstractContainerScreen
      */
-    @Environment(EnvType.CLIENT)
-    public void renderTabIcon(MatrixStack matrices, TabRenderInfo tabRenderInfo, HandledScreen<?> currentScreen) {
+    @OnlyIn(Dist.CLIENT)
+    public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
         ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
-        TextRenderer textRenderer = ((ScreenAccessor) currentScreen).getTextRenderer();
-        itemRenderer.zOffset = 100.0F;
+        Font font = ((ScreenAccessor) currentScreen).getFont();
+        itemRenderer.blitOffset = 100.0F;
         // RenderSystem.enableRescaleNormal();
-        itemRenderer.renderInGuiWithOverrides(renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.renderGuiItemOverlay(textRenderer, renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.zOffset = 0.0F;
+        itemRenderer.renderAndDecorateItem(renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        itemRenderer.renderGuiItemDecorations(font, renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        itemRenderer.blitOffset = 0.0F;
     }
 }

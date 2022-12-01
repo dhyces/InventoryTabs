@@ -7,51 +7,51 @@ import java.util.stream.Collectors;
 import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Provides tabs for simple blocks.
  */
 public class SimpleBlockTabProvider extends BlockTabProvider {
-    private final Set<Identifier> blockIds = new HashSet<>();
+    private final Set<ResourceLocation> blockIds = new HashSet<>();
 
     public SimpleBlockTabProvider() {
     }
 
     public void addBlock(Block block) {
-        blockIds.add(Registry.BLOCK.getId(block));
+        blockIds.add(ForgeRegistries.BLOCKS.getKey(block));
     }
 
-    public void addBlock(Identifier identifier) {
-        blockIds.add(identifier);
+    public void addBlock(ResourceLocation ResourceLocation) {
+        blockIds.add(ResourceLocation);
     }
 
     public void removeBlock(Block block) {
-        blockIds.remove(Registry.BLOCK.getId(block));
+        blockIds.remove(ForgeRegistries.BLOCKS.getKey(block));
     }
 
-    public void removeBlock(Identifier identifier) {
-        blockIds.remove(identifier);
+    public void removeBlock(ResourceLocation ResourceLocation) {
+        blockIds.remove(ResourceLocation);
     }
 
-    public Set<Identifier> getBlockIds() {
+    public Set<ResourceLocation> getBlockIds() {
         return this.blockIds;
     }
 
     public Set<Block> getBlocks() {
-        return this.blockIds.stream().map(Registry.BLOCK::get).collect(Collectors.toSet());
+        return this.blockIds.stream().map(ForgeRegistries.BLOCKS::getValue).collect(Collectors.toSet());
     }
 
     @Override
-    public boolean matches(World world, BlockPos pos) {
+    public boolean matches(Level world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
 
-        if (blockIds.contains(Registry.BLOCK.getId(blockState.getBlock()))) {
+        if (blockIds.contains(ForgeRegistries.BLOCKS.getKey(blockState.getBlock()))) {
             return true;
         }
 
@@ -59,7 +59,7 @@ public class SimpleBlockTabProvider extends BlockTabProvider {
     }
 
     @Override
-    public Tab createTab(World world, BlockPos pos) {
-        return new SimpleBlockTab(Registry.BLOCK.getId(world.getBlockState(pos).getBlock()), pos);
+    public Tab createTab(Level world, BlockPos pos) {
+        return new SimpleBlockTab(ForgeRegistries.BLOCKS.getKey(world.getBlockState(pos).getBlock()), pos);
     }
 }

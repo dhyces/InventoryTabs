@@ -2,37 +2,38 @@ package com.kqp.inventorytabs.tabs.tab;
 
 import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import java.util.Objects;
 
 public class SimpleEntityTab extends Tab {
-    public final Vec3d entityPos;
-    public final Identifier entityId;
+    public final Vec3 entityPos;
+    public final ResourceLocation entityId;
     public final Entity entity;
 
     public SimpleEntityTab(Entity entity) {
-        super(new ItemStack(Registry.ITEM.get(new Identifier("minecraft", "barrier"))));
+        super(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier"))));
         this.entity = entity;
-        this.entityPos = entity.getPos();
-        this.entityId = EntityType.getId(entity.getType());
+        this.entityPos = entity.position();
+        this.entityId = EntityType.getKey(entity.getType());
     }
 
     @Override
     public void open() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        MinecraftClient.getInstance().interactionManager.interactEntity(player, entity, player.getActiveHand());
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        Minecraft.getInstance().gameMode.interact(player, entity, player.getUsedItemHand());
     }
 
     @Override
@@ -40,23 +41,23 @@ public class SimpleEntityTab extends Tab {
         if (entity.isRemoved()) {
             return true;
         }
-        return entityPos.distanceTo(MinecraftClient.getInstance().player.getPos()) > 5;
+        return entityPos.distanceTo(Minecraft.getInstance().player.position()) > 5;
     }
 
     @Override
-    public Text getHoverText() {
+    public Component getHoverText() {
         return entity.getName();
     }
 
     @Override
-    public void renderTabIcon(MatrixStack matrices, TabRenderInfo tabRenderInfo, HandledScreen<?> currentScreen) {
+    public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
         ItemStack itemStack = getItemStack();
         ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
-        TextRenderer textRenderer = ((ScreenAccessor) currentScreen).getTextRenderer();
-        itemRenderer.zOffset = 100.0F;
-        itemRenderer.renderInGuiWithOverrides(itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.renderGuiItemOverlay(textRenderer, itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.zOffset = 0.0F;
+        Font textRenderer = ((ScreenAccessor) currentScreen).getFont();
+        itemRenderer.blitOffset = 100.0F;
+        itemRenderer.renderAndDecorateItem(itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        itemRenderer.renderGuiItemDecorations(textRenderer, itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        itemRenderer.blitOffset = 0.0F;
     }
 
     @Override
@@ -77,6 +78,6 @@ public class SimpleEntityTab extends Tab {
     }
 
     public ItemStack getItemStack() {
-        return entity.getPickBlockStack() != null ? entity.getPickBlockStack() : new ItemStack(Registry.ITEM.get(new Identifier("minecraft", "barrier")));
+        return entity.getPickResult() != null ? entity.getPickResult() : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier")));
     }
 }

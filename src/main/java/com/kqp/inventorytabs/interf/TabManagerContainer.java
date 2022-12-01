@@ -2,14 +2,14 @@ package com.kqp.inventorytabs.interf;
 
 import com.kqp.inventorytabs.tabs.TabManager;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Interface for holding the tab manager. Gets injected into
- * {@link net.minecraft.client.MinecraftClient}.
+ * {@link net.minecraft.client.Minecraft}.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface TabManagerContainer {
     TabManager getTabManager();
 }

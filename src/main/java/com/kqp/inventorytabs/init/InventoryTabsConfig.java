@@ -1,29 +1,39 @@
 package com.kqp.inventorytabs.init;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Config(name = "inventory_tabs")
-public class InventoryTabsConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
-    public boolean doSightChecksFlag = true;
-    @ConfigEntry.Gui.Tooltip
-    public boolean rotatePlayer = false;
+public class InventoryTabsConfig {
 
-    @ConfigEntry.Gui.Tooltip
-    public List<String> excludeTab = Arrays.asList(
-            "tiered:reforging_station",
-            "#techreborn:block_entities_without_inventories",
-            "#inventorytabs:mod_compat_blacklist"
-    );
+    public static ForgeConfigSpec.BooleanValue doSightChecksFlag;
+    public static ForgeConfigSpec.BooleanValue rotatePlayer;
+    public static ForgeConfigSpec.ConfigValue<List<String>> excludeTab;
+    public static ForgeConfigSpec.ConfigValue<List<String>> includeTab;
+    public static ForgeConfigSpec.BooleanValue debugEnabled;
 
-    @ConfigEntry.Gui.Tooltip
-    public List<String> includeTab = Arrays.asList();
+    public static void setupConfig(ForgeConfigSpec.Builder builder) {
+        builder.push("Client");
 
-    public boolean debugEnabled = false;
+        doSightChecksFlag = builder.define("doSightChecksFlag", () -> true);
+        rotatePlayer = builder.define("rotatePlayer", () -> false);
+        excludeTab = builder.define("excludeTab", List.of("tiered:reforging_station", "#techreborn:block_entities_without_inventories", "#inventorytabs:mod_compat_blacklist"));
+        includeTab = builder.define("includeTab", List.of());
+        debugEnabled = builder.define("debugEnabled", () -> false);
+    }
+
+//    public boolean doSightChecksFlag = true;
+//    public boolean rotatePlayer = false;
+
+//    public List<String> excludeTab = Arrays.asList(
+//            "tiered:reforging_station",
+//            "#techreborn:block_entities_without_inventories",
+//            "#inventorytabs:mod_compat_blacklist"
+//    );
+//
+//    public List<String> includeTab = Arrays.asList();
+//
+//    public boolean debugEnabled = false;
 }

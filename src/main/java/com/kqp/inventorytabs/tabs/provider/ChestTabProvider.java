@@ -9,25 +9,23 @@ import com.kqp.inventorytabs.tabs.tab.ChestTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.ChestUtil;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Provides tabs for chests. Limits double chests to having only one tab and
  * takes into account if it's blocked.
  */
 public class ChestTabProvider extends BlockTabProvider {
-    private final Set<Identifier> chestBlocks = new HashSet<>();
+    private final Set<ResourceLocation> chestBlocks = new HashSet<>();
 
     @Override
-    public void addAvailableTabs(ClientPlayerEntity player, List<Tab> tabs) {
+    public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         super.addAvailableTabs(player, tabs);
 
         Set<ChestTab> tabsToRemove = new HashSet<>();
@@ -35,10 +33,10 @@ public class ChestTabProvider extends BlockTabProvider {
         List<ChestTab> chestTabs = tabs.stream().filter(tab -> tab instanceof ChestTab).map(tab -> (ChestTab) tab)
                 .filter(tab -> chestBlocks.contains(tab.blockId)).collect(Collectors.toList());
 
-        World world = player.world;
+        Level world = player.level;
 
         // Add any chests that are blocked
-        chestTabs.stream().filter(tab -> ChestBlock.isChestBlocked(world, tab.blockPos)).forEach(tabsToRemove::add);
+        chestTabs.stream().filter(tab -> ChestBlock.isChestBlockedAt(world, tab.blockPos)).forEach(tabsToRemove::add);
 
         for (ChestTab tab : chestTabs) {
             if (!tabsToRemove.contains(tab)) {
@@ -52,30 +50,30 @@ public class ChestTabProvider extends BlockTabProvider {
     }
 
     public void addChestBlock(Block block) {
-        chestBlocks.add(Registry.BLOCK.getId(block));
+        chestBlocks.add(ForgeRegistries.BLOCKS.getKey(block));
     }
 
-    public void addChestBlock(Identifier blockId) {
+    public void addChestBlock(ResourceLocation blockId) {
         chestBlocks.add(blockId);
     }
 
-    public void removeChestBlockId(Identifier blockId) {
+    public void removeChestBlockId(ResourceLocation blockId) {
         chestBlocks.remove(blockId);
     }
 
-    public Set<Identifier> getChestBlockIds() {
+    public Set<ResourceLocation> getChestBlockIds() {
         return this.chestBlocks;
     }
 
     @Override
-    public boolean matches(World world, BlockPos pos) {
+    public boolean matches(Level world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
 
-        return chestBlocks.contains(Registry.BLOCK.getId(block));
+        return chestBlocks.contains(ForgeRegistries.BLOCKS.getKey(block));
     }
 
     @Override
-    public Tab createTab(World world, BlockPos pos) {
-        return new ChestTab(Registry.BLOCK.getId(world.getBlockState(pos).getBlock()), pos);
+    public Tab createTab(Level world, BlockPos pos) {
+        return new ChestTab(ForgeRegistries.BLOCKS.getKey(world.getBlockState(pos).getBlock()), pos);
     }
 }
