@@ -111,13 +111,10 @@ public class TabProviderRegistry {
         for (String overrideEntry : tagSet) {
             String[] splitEntry = overrideEntry.split(":"); // split into two parts: tag id, item name
             if (isValid(overrideEntry, splitEntry, invalidSet)) {
-                List<TagKey<Block>> blockStream = ForgeRegistries.BLOCKS.tags().getReverseTag(block).map(IReverseTag::getTagKeys).orElseGet(Stream::of).toList();
-                for (TagKey<Block> tagKey : blockStream) {
-                    if (block.defaultBlockState().is(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(splitEntry[0], splitEntry[1])))) {
-                        removeSimpleBlock(block);
-                        if (InventoryTabsConfig.debugEnabled.get()) {
-                            LOGGER.info("Excluding: " + block);
-                        }
+                if (block.defaultBlockState().is(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(splitEntry[0], splitEntry[1])))) {
+                    removeSimpleBlock(block);
+                    if (InventoryTabsConfig.debugEnabled.get()) {
+                        LOGGER.info("Excluding: " + block);
                     }
                 }
             }
