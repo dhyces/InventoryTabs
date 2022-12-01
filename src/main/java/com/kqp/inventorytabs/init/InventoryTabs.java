@@ -6,7 +6,6 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -52,6 +51,6 @@ public class InventoryTabs {
     }
 
     private void datapackReload(AddReloadListenerEvent event) {
-//        TabProviderRegistry.init("reload");
+//        TabProviderRegistry.init("reload"); //TODO: after datapacks are loaded
     }
 }
