@@ -21,6 +21,8 @@ apply plugin: 'eclipse'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+archivesBaseName = "${mod_id}-forge-${mod_version}-${mc_version}"
+
 minecraft {
 	mappings channel: "${mappings_id}", version: "${mappings_version}"
 
@@ -57,6 +59,20 @@ minecraft {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+tasks.withType(JavaCompile) {
+    source(sourceSets.main.allSource)
+}
+
+java {
+	withSourcesJar()
+}
+
+sourcesJar {
+	from(rootProject.file("LICENSE")) {
+		rename { "${it}_${mod_id}" }
+	}
+}
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
