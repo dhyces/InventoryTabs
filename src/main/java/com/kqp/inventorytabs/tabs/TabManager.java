@@ -1,10 +1,5 @@
 package com.kqp.inventorytabs.tabs;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import com.kqp.inventorytabs.api.TabProviderRegistry;
 import com.kqp.inventorytabs.init.InventoryTabsClient;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
@@ -14,19 +9,22 @@ import com.kqp.inventorytabs.tabs.render.TabRenderer;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.MouseUtil;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.kqp.inventorytabs.init.InventoryTabs.*;
 
@@ -95,8 +93,7 @@ public class TabManager {
         }
 
         // Sort
-        tabs.sort(
-                Comparator.comparing(Tab::getPriority).reversed().thenComparing(tab -> tab.getHoverText().getString()));
+        tabs.sort(Comparator.comparing(Tab::getPriority).reversed().thenComparing(tab -> tab.getHoverText().getString()));
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
