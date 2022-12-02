@@ -13,5 +13,5 @@ public interface ShulkerBoxBlockInvoker {
 	@Invoker("canOpen")
 	public static boolean invokeCanOpen(BlockState state, Level world, BlockPos pos, ShulkerBoxBlockEntity entity) {
 		throw new AssertionError();
-	};
+	}
 }

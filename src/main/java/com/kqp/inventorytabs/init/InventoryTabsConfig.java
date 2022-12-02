@@ -2,8 +2,6 @@ package com.kqp.inventorytabs.init;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InventoryTabsConfig {

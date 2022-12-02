@@ -1,14 +1,8 @@
 package com.kqp.inventorytabs.tabs.provider;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.kqp.inventorytabs.mixin.ShulkerBoxBlockInvoker;
 import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
-
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -17,6 +11,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides tabs for shulker boxes. Takes into account if it's blocked.
@@ -36,11 +35,10 @@ public class ShulkerBoxTabProvider extends BlockTabProvider {
         shulkerTabs.stream().filter(tab -> {
             BlockEntity blockEntity = player.level.getBlockEntity(tab.blockPos);
 
-            if (blockEntity instanceof ShulkerBoxBlockEntity) {
+            if (blockEntity instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
                 BlockState blockState = player.level.getBlockState(tab.blockPos);
 
-                return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.level, tab.blockPos,
-                        (ShulkerBoxBlockEntity) blockEntity);
+                return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.level, tab.blockPos, shulkerBoxBlockEntity);
             }
 
             return false;
