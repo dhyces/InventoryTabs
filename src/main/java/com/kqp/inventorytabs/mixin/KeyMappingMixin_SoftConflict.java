@@ -1,9 +1,5 @@
 package com.kqp.inventorytabs.mixin;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-
 import com.kqp.inventorytabs.init.InventoryTabsClient;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -16,6 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 @Mixin(KeyMapping.class)
 public abstract class KeyMappingMixin_SoftConflict {
