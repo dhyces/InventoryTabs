@@ -1,7 +1,6 @@
 package com.kqp.inventorytabs.interf;
 
 import com.kqp.inventorytabs.tabs.TabManager;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
