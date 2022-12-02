@@ -1,7 +1,6 @@
 package com.kqp.inventorytabs.init;
 
 import com.kqp.inventorytabs.interf.TabManagerContainer;
-
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;

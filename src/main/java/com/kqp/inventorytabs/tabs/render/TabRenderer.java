@@ -1,13 +1,10 @@
 package com.kqp.inventorytabs.tabs.render;
 
-import java.awt.Rectangle;
-
 import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.mixin.accessor.AbstractContainerScreenAccessor;
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,6 +12,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.awt.*;
 
 import static com.kqp.inventorytabs.init.InventoryTabs.*;
 

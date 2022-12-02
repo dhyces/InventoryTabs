@@ -1,10 +1,9 @@
 package com.kqp.inventorytabs.tabs.provider;
 
-import java.util.List;
-
 import com.kqp.inventorytabs.tabs.tab.Tab;
-
 import net.minecraft.client.player.AbstractClientPlayer;
+
+import java.util.List;
 
 /**
  * Base interface for exposing tabs to the player.
