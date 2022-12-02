@@ -1,7 +1,6 @@
 package com.kqp.inventorytabs.tabs.tab;
 
 import com.kqp.inventorytabs.mixin.ShulkerBoxBlockInvoker;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
@@ -24,11 +23,10 @@ public class ShulkerBoxTab extends SimpleBlockTab {
 
         BlockEntity blockEntity = player.level.getBlockEntity(blockPos);
 
-        if (blockEntity instanceof ShulkerBoxBlockEntity) {
+        if (blockEntity instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
             BlockState blockState = player.level.getBlockState(blockPos);
 
-            return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.level, blockPos,
-                    (ShulkerBoxBlockEntity) blockEntity);
+            return !ShulkerBoxBlockInvoker.invokeCanOpen(blockState, player.level, blockPos, shulkerBoxBlockEntity);
         }
 
         return super.shouldBeRemoved();

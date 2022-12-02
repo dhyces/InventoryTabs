@@ -1,7 +1,5 @@
 package com.kqp.inventorytabs.mixin;
 
-import java.util.Objects;
-
 import com.kqp.inventorytabs.init.InventoryTabsClient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -13,6 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+import java.util.Objects;
 
 /**
  * The 'Tab' KeyMapping conflicts with the multiplayer player list keybind, but since you can only see the player list when outside the inventory

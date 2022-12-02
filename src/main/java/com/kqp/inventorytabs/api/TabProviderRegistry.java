@@ -1,13 +1,9 @@
 package com.kqp.inventorytabs.api;
 
-import java.util.*;
-import java.util.stream.Stream;
-
 import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.provider.*;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -15,9 +11,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.IReverseTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 /**
  * Registry for tab providers.
@@ -206,6 +203,6 @@ public class TabProviderRegistry {
     }
 
     public static List<TabProvider> getTabProviders() {
-        return new ArrayList<>(TAB_PROVIDERS.values());
+        return List.copyOf(TAB_PROVIDERS.values());
     }
 }
