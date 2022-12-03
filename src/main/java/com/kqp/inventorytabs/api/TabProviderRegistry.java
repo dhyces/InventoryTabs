@@ -79,10 +79,10 @@ public class TabProviderRegistry {
         configRemove(blockSet);
         configAdd();
         var fakeLevel = new FakeLevel();
-        ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
+        ForgeRegistries.ENTITIES.forEach(entityType -> {
             var entity = entityType.create(fakeLevel);
             if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
-                registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+                registerEntity(ForgeRegistries.ENTITIES.getKey(entityType));
             }
         });
 

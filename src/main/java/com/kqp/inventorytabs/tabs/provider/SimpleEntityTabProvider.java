@@ -30,7 +30,7 @@ public class SimpleEntityTabProvider extends EntityTabProvider {
 
     @Override
     public boolean matches(Entity entity) {
-        return entityIds.contains(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()));
+        return entityIds.contains(ForgeRegistries.ENTITIES.getKey(entity.getType()));
     }
 
     public void addEntity(ResourceLocation entityId) {

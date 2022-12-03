@@ -44,7 +44,7 @@ import java.util.function.Consumer;
 public class FakeLevel extends Level implements LightChunkGetter {
 
     public FakeLevel() {
-        super(new FakeWritableLevelData(), ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("overworld")), RegistryAccess.builtinCopy().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getOrCreateHolderOrThrow(ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation("overworld"))), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L, 0);
+        super(new FakeWritableLevelData(), ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("overworld")), RegistryAccess.builtinCopy().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getOrCreateHolder(ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation("overworld"))), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class FakeLevel extends Level implements LightChunkGetter {
     }
 
     @Override
-    public void playSeededSound(@Nullable Player pPlayer, double pX, double pY, double pZ, SoundEvent pSoundEvent, SoundSource pSoundSource, float pVolume, float pPitch, long pSeed) {
+    public void playSound(@Nullable Player pPlayer, double pX, double pY, double pZ, SoundEvent pSound, SoundSource pCategory, float pVolume, float pPitch) {
 
     }
 
     @Override
-    public void playSeededSound(@Nullable Player pPlayer, Entity pEntity, SoundEvent pSoundEvent, SoundSource pSoundSource, float pVolume, float pPitch, long pSeed) {
+    public void playSound(@Nullable Player pPlayer, Entity pEntity, SoundEvent pEvent, SoundSource pCategory, float pVolume, float pPitch) {
 
     }
 
@@ -244,7 +244,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     }
 
     @Override
-    public void gameEvent(@NotNull GameEvent pEvent, @NotNull Vec3 pPosition, @NotNull GameEvent.Context pContext) {
+    public void gameEvent(@Nullable Entity pEntity, GameEvent pEvent, BlockPos pPos) {
 
     }
 
@@ -268,7 +268,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     public Holder<Biome> getUncachedNoiseBiome(int pX, int pY, int pZ) {
-        return registryAccess().registry(Registry.BIOME_REGISTRY).get().getOrCreateHolderOrThrow(Biomes.BADLANDS);
+        return registryAccess().registry(Registry.BIOME_REGISTRY).get().getOrCreateHolder(Biomes.BADLANDS);
     }
 
     @Nullable
