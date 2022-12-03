@@ -1,5 +1,6 @@
 package com.kqp.inventorytabs.api;
 
+import com.kqp.inventorytabs.init.FakeLevel;
 import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
@@ -8,12 +9,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 /**
@@ -71,7 +78,13 @@ public class TabProviderRegistry {
         });
         configRemove(blockSet);
         configAdd();
-        registerEntity(new ResourceLocation("minecraft:entity.minecraft.chest_minecart"));
+        var fakeLevel = new FakeLevel();
+        ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
+            var entity = entityType.create(fakeLevel);
+            if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
+                registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+            }
+        });
 
         Minecraft client = Minecraft.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;

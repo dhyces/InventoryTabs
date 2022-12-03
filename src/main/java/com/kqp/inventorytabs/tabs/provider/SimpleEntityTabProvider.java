@@ -6,13 +6,15 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SimpleEntityTabProvider extends EntityTabProvider {
-    private final Set<ResourceLocation> entities = new HashSet<>();
+    private final Set<ResourceLocation> entityIds = new HashSet<>();
 
     public SimpleEntityTabProvider() {
     }
@@ -20,19 +22,19 @@ public class SimpleEntityTabProvider extends EntityTabProvider {
     @Override
     public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         super.addAvailableTabs(player, tabs);
-        Set<SimpleEntityTab> tabsToRemove = new HashSet<>();
-        List<SimpleEntityTab> entityTabs = tabs.stream().filter(tab -> tab instanceof SimpleEntityTab).map(tab -> (SimpleEntityTab) tab)
-                .filter(tab -> entities.contains(tab.entityId)).toList();
-        Level world = player.level;
+//        Set<SimpleEntityTab> tabsToRemove = new HashSet<>();
+//        List<SimpleEntityTab> entityTabs = tabs.stream().filter(tab -> tab instanceof SimpleEntityTab).map(tab -> (SimpleEntityTab) tab)
+//                .filter(tab -> entityIds.contains(tab.entityId)).toList();
+//        Level world = player.level;
     }
 
     @Override
     public boolean matches(Entity entity) {
-        return entities.contains(new ResourceLocation("minecraft:entity.minecraft.chest_minecart"));
+        return entityIds.contains(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()));
     }
 
     public void addEntity(ResourceLocation entityId) {
-        entities.add(entityId);
+        entityIds.add(entityId);
     }
 
     @Override
