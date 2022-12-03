@@ -21,7 +21,7 @@ apply plugin: 'eclipse'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-archivesBaseName = "${mod_id}-forge-${mod_version}-${mc_version}"
+archivesBaseName = "${mod_id}-forge-${mc_version}-${mod_version}"
 
 minecraft {
 	mappings channel: "${mappings_id}", version: "${mappings_version}"
