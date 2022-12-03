@@ -12,6 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class EntityTabProvider implements TabProvider {
     public static final int SEARCH_DISTANCE = 5;
@@ -46,7 +47,7 @@ public abstract class EntityTabProvider implements TabProvider {
         }
     }
     /**
-     * Checks to see if block at passsed block position matches criteria.
+     * Checks to see if entity passed in matches criteria.
      *
      * @param entity
      * @return
