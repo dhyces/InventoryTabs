@@ -52,8 +52,7 @@ public class SimpleBlockTab extends Tab {
                         Vec3.atCenterOf(blockPos));
             }
 
-            Minecraft.getInstance().gameMode.useItemOn(client.player,
-                    InteractionHand.MAIN_HAND, hitResult);
+            Minecraft.getInstance().gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
         }
     }
 

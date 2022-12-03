@@ -19,14 +19,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Objects;
 
 public class SimpleEntityTab extends Tab {
-    public final Vec3 entityPos;
     public final ResourceLocation entityId;
     public final Entity entity;
 
     public SimpleEntityTab(Entity entity) {
         super(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier"))));
         this.entity = entity;
-        this.entityPos = entity.position();
         this.entityId = EntityType.getKey(entity.getType());
     }
 
@@ -41,7 +39,7 @@ public class SimpleEntityTab extends Tab {
         if (entity.isRemoved()) {
             return true;
         }
-        return entityPos.distanceTo(Minecraft.getInstance().player.position()) > 5;
+        return entity.position().distanceTo(Minecraft.getInstance().player.position()) > 5;
     }
 
     @Override
@@ -69,12 +67,15 @@ public class SimpleEntityTab extends Tab {
             return false;
         }
         SimpleEntityTab tab = (SimpleEntityTab) o;
-        return Objects.equals(entityId, tab.entityId);
+        if (!Objects.equals(entityId, tab.entityId)) {
+            return false;
+        }
+        return entity.getUUID().equals(tab.entity.getUUID());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(entityId);
+        return Objects.hash(entity.getUUID());
     }
 
     public ItemStack getItemStack() {

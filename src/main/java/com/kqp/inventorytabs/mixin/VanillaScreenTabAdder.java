@@ -5,6 +5,7 @@ import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
 import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
+import com.kqp.inventorytabs.tabs.tab.SimpleEntityTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.ChestUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -78,6 +80,17 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
                         if (tab instanceof SimpleBlockTab) {
                             if (matchingBlockPositions.contains(((SimpleBlockTab) tab).blockPos)) {
+                                tabOpened = tab;
+                                break;
+                            }
+                        }
+                    }
+                } else if (client.hitResult instanceof EntityHitResult entityHitResult) {
+                    var entity = entityHitResult.getEntity();
+                    for (int i = 0; i < tabManager.tabs.size(); i++) {
+                        var tab = tabManager.tabs.get(i);
+                        if (tab instanceof SimpleEntityTab entityTab) {
+                            if (entity.getUUID().equals(entityTab.entity.getUUID())) {
                                 tabOpened = tab;
                                 break;
                             }
