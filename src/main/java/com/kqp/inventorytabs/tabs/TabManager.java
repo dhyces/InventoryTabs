@@ -9,6 +9,7 @@ import com.kqp.inventorytabs.tabs.render.TabRenderer;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.MouseUtil;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -224,7 +225,7 @@ public class TabManager {
                         client.gameMode.handleInventoryMouseClick(
                                 handler.containerId,
                                 screenSlot,
-                                0, // Mouse Left Click
+                                InputConstants.MOUSE_BUTTON_LEFT,
                                 ClickType.PICKUP,
                                 client.player
                         );
