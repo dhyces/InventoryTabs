@@ -110,8 +110,6 @@ public class TabRenderer {
 
     private void drawPageText(PoseStack poseStack) {
         if (tabManager.getMaxPages() > 1 && pageTextRefreshTime > 0) {
-            // RenderSystem.pushMatrix();
-            // TODO: Figure out rendering
 
             int color = 0xFFFFFFFF;
 
@@ -139,8 +137,6 @@ public class TabRenderer {
             int y = oY - 34;
 
             Minecraft.getInstance().font.draw(poseStack, text, x, y, color);
-
-            // RenderSystem.popMatrix();
         }
     }
 
