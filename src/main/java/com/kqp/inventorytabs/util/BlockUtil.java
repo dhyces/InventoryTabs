@@ -36,8 +36,7 @@ public class BlockUtil {
         for (Vec3 sightOffset : SIGHT_OFFSETS) {
             Vec3 blockPosCheck = blockVec.add(sightOffset);
 
-            BlockHitResult result = getBlockHitResult(playerHead, blockPosCheck, distanceSquared, world, pos,
-                    blockState);
+            BlockHitResult result = getBlockHitResult(playerHead, blockPosCheck, distanceSquared, world, pos);
 
             if (result != null) {
                 if (result.getBlockPos().equals(pos)) {
@@ -50,19 +49,22 @@ public class BlockUtil {
     }
 
     private static BlockHitResult getBlockHitResult(Vec3 playerHead, Vec3 blockVec, double distanceSquared,
-            Level world, BlockPos pos, BlockState blockState) {
+            Level world, BlockPos pos) {
         if (blockVec.subtract(playerHead).lengthSqr() >= distanceSquared) {
             return null;
         }
 
-        BlockHitResult result = world.clip(new ClipContext(playerHead, blockVec, ClipContext.Block.OUTLINE,
-                ClipContext.Fluid.NONE, Minecraft.getInstance().player));
+        BlockHitResult result = blockClip(Minecraft.getInstance().player, playerHead, blockVec);
 
         if (result.getType() == HitResult.Type.BLOCK && result.getBlockPos().equals(pos)) {
             return result;
         }
 
         return null;
+    }
+
+    public static BlockHitResult blockClip(Player player, Vec3 startVec, Vec3 endVec) {
+        return player.level.clip(new ClipContext(startVec, endVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
     }
 
     private static final Vec3[] SIGHT_OFFSETS = {
