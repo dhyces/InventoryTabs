@@ -19,7 +19,6 @@ public class AdvancedEntityTabProvider extends EntityTabProvider {
         Set<SimpleEntityTab> tabsToRemove = new HashSet<>();
         List<SimpleEntityTab> entityTabs = tabs.stream().filter(tab -> tab instanceof SimpleEntityTab).map(tab -> (SimpleEntityTab) tab)
                 .filter(tab -> entityMap.containsKey(tab.entityId)).toList();
-        Level world = player.level;
 
         entityTabs.stream().filter(SimpleEntityTab::shouldBeRemoved).forEach(tabsToRemove::add);
         tabs.removeAll(tabsToRemove);
