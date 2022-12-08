@@ -5,7 +5,6 @@ import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
