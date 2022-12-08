@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
-import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Villager;
@@ -83,13 +82,13 @@ public class TabProviderRegistry {
         configAdd();
         var fakeLevel = new FakeLevel();
         if (InventoryTabsConfig.entityTabsBeta.get()) { // TODO: Remove this when it goes out of beta
-            ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
+            ForgeRegistries.ENTITIES.forEach(entityType -> {
                 var entity = entityType.create(fakeLevel);
                 if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
                     if (entity instanceof Villager) {
-                        registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), VillagerTab::new);
-                    } else if (!(entity instanceof Piglin) && !(entity instanceof Allay)) {
-                        registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), VillagerTab::new);
+                    } else if (!(entity instanceof Piglin)) {
+                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType));
                     }
                 }
             });

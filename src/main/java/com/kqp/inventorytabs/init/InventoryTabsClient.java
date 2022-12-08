@@ -1,17 +1,17 @@
 package com.kqp.inventorytabs.init;
 
 import com.kqp.inventorytabs.interf.TabManagerContainer;
-import com.kqp.inventorytabs.tabs.TabManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class InventoryTabsClient {
@@ -42,12 +42,14 @@ public class InventoryTabsClient {
         }
     }
 
-    private static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(NEXT_TAB_KEY_BIND);
-        event.register(DISABLE_TABS_KEY_BIND);
+    private static void onRegisterKeyMappings(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ClientRegistry.registerKeyBinding(NEXT_TAB_KEY_BIND);
+            ClientRegistry.registerKeyBinding(DISABLE_TABS_KEY_BIND);
+        });
     }
 
-    private static void onKeyPressed(InputEvent.Key event) {
+    private static void onKeyPressed(InputEvent.KeyInputEvent event) {
         if (DISABLE_TABS_KEY_BIND.matches(event.getKey(), event.getScanCode())) {
             InventoryTabsConfig.renderTabs.set(DISABLE_TABS_KEY_BIND.consumeClick() != InventoryTabsConfig.renderTabs.get());
         }
