@@ -55,11 +55,10 @@ public class EntityUtil {
         return false;
     }
 
-    public static boolean canInteract(Player player, Entity entity) {
-        var reach = player.getReachDistance();
+    public static boolean canInteract(Player player, Entity entity, double distance) {
         var playerEyePos = player.position().add(0, player.getEyeHeight(player.getPose()), 0);
         var entityPos = entity.position().add(0, 0.5, 0);
-        var entityHitResult = entityClip(player, playerEyePos, entityPos, entity, reach);
+        var entityHitResult = entityClip(player, playerEyePos, entityPos, entity, distance);
         if (entityHitResult != null && !entityHitResult.getType().equals(HitResult.Type.MISS)) {
             var distToEntity = playerEyePos.distanceToSqr(entityHitResult.getLocation());
             var blockHitResult = BlockUtil.blockClip(player, playerEyePos, entityPos);
@@ -69,7 +68,7 @@ public class EntityUtil {
                     return true;
                 }
             } else {
-                return distToEntity <= reach * reach;
+                return distToEntity <= distance * distance;
             }
         }
 
