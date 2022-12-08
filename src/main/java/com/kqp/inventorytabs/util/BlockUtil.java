@@ -31,7 +31,7 @@ public class BlockUtil {
         double distanceSquared = distance * distance;
 
         Vec3 playerHead = player.position().add(0D, player.getEyeHeight(player.getPose()), 0D);
-        Vec3 blockVec = new Vec3(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 blockVec = Vec3.atLowerCornerOf(pos);
 
         for (Vec3 sightOffset : SIGHT_OFFSETS) {
             Vec3 blockPosCheck = blockVec.add(sightOffset);
