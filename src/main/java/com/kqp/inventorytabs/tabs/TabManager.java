@@ -204,9 +204,9 @@ public class TabManager {
     public void onTabClick(Tab tab) {
         // Push current mouse position
         // This is to persist mouse position across screens
-       // if (!Minecraft.getInstance().player.isCreative() || !(tab instanceof PlayerInventoryTab)) {
+        if (!Minecraft.getInstance().player.isCreative() || !(tab instanceof PlayerInventoryTab)) {
             MouseUtil.push();
-        //}
+        }
 
         // Set tab open flag
         tabOpenedRecently = true;
