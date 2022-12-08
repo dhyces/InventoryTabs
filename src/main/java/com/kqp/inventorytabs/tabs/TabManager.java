@@ -7,6 +7,7 @@ import com.kqp.inventorytabs.mixin.accessor.AbstractContainerScreenAccessor;
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
 import com.kqp.inventorytabs.tabs.render.TabRenderer;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
+import com.kqp.inventorytabs.tabs.tab.PlayerInventoryTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.MouseUtil;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -203,7 +204,9 @@ public class TabManager {
     public void onTabClick(Tab tab) {
         // Push current mouse position
         // This is to persist mouse position across screens
-        MouseUtil.push();
+       // if (!Minecraft.getInstance().player.isCreative() || !(tab instanceof PlayerInventoryTab)) {
+            MouseUtil.push();
+        //}
 
         // Set tab open flag
         tabOpenedRecently = true;
