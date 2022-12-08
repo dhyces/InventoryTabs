@@ -13,24 +13,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.UUID;
 
 public abstract class EntityTabProvider implements TabProvider {
     public static final int SEARCH_DISTANCE = 5;
 
     @Override
     public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
-        Level world = player.level;
+        Level level = player.level;
         var reach = player.getReachDistance();
-        List<Entity> entityList = world.getEntitiesOfClass(Entity.class, player.getBoundingBox().expandTowards(player.getViewVector(1).scale(reach)).inflate(1));
+        List<Entity> entityList = level.getEntities(player, EntityUtil.aabbFromPlayer(player, reach));
 
         for (Entity entity : entityList) {
-            if (!(entity instanceof Player) && ((entity instanceof Container) || (entity instanceof InventoryCarrier) || (entity instanceof ContainerListener))) {
                 if (matches(entity)) {
                     boolean add = false;
 
                     if (InventoryTabsConfig.doSightChecksFlag.get()) {
-                        var lineOfSight = EntityUtil.getLineOfSight(entity, player, player.getReachDistance());
+                        var lineOfSight = EntityUtil.getLineOfSight(entity, player, reach);
                         if (lineOfSight.isPresent()) {
                             add = true;
                         }
@@ -39,11 +37,10 @@ public abstract class EntityTabProvider implements TabProvider {
                         Vec3 blockVec = new Vec3(entity.getX() + 0.5D, entity.getY() + 0.5D,
                                 entity.getZ() + 0.5D);
 
-                        if (blockVec.subtract(playerHead).lengthSqr() < SEARCH_DISTANCE * SEARCH_DISTANCE) {
+                        if (blockVec.subtract(playerHead).lengthSqr() < reach * reach) {
                             add = true;
                         }
                     }
-
 
                     if (add) {
                         Tab tab = createTab(entity);
@@ -53,7 +50,6 @@ public abstract class EntityTabProvider implements TabProvider {
                         }
                     }
                 }
-            }
         }
     }
     /**
