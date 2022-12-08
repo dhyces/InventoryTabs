@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
@@ -19,8 +18,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 /**
@@ -50,7 +47,7 @@ public class TabProviderRegistry {
             InventoryTabs.id("inventory_tab_provider"), new InventoryTabProvider());
 
     public static void init(String configMsg) {
-        LOGGER.info("InventoryTabs: Attempting to "+configMsg+" config...");
+        LOGGER.info("InventoryTabs: Attempting to %s config...".formatted(configMsg));
         if (InventoryTabsConfig.debugEnabled.get()) {
             LOGGER.warn("InventoryTabs: DEBUG ENABLED");
         }
@@ -79,17 +76,19 @@ public class TabProviderRegistry {
         configRemove(blockSet);
         configAdd();
         var fakeLevel = new FakeLevel();
-        ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
-            var entity = entityType.create(fakeLevel);
-            if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
-                registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
-            }
-        });
+        if (InventoryTabsConfig.entityTabsBeta.get()) { // TODO: Remove this when it goes out of beta
+            ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
+                var entity = entityType.create(fakeLevel);
+                if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
+                    registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+                }
+            });
+        }
 
         Minecraft client = Minecraft.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
         tabManagerContainer.getTabManager().removeTabs();
-        LOGGER.info(configMsg.equals("save") ? "InventoryTabs: Config saved!": "InventoryTabs: Config "+configMsg+"ed!");
+        LOGGER.info(configMsg.equals("save") ? "InventoryTabs: Config saved!": "InventoryTabs: Config %sed!".formatted(configMsg));
     }
 
     private static void modCompatAdd() {
@@ -112,19 +111,19 @@ public class TabProviderRegistry {
     private static void configRemove(Set<String> blockSet) {
         for (String overrideEntry : blockSet) {
             if (InventoryTabsConfig.debugEnabled.get()) {
-                LOGGER.info("Excluding: " + overrideEntry);
+                LOGGER.info("Excluding: %s".formatted(overrideEntry));
             }
             removeSimpleBlock(new ResourceLocation(overrideEntry));
         }
     }
     private static void configRemove(Block block, Set<String> tagSet, Set<String> invalidSet) {
         for (String overrideEntry : tagSet) {
-            String[] splitEntry = overrideEntry.split(":"); // split into two parts: tag id, item name
+            String[] splitEntry = overrideEntry.split(":"); // split into two parts: namespace, id
             if (isValid(overrideEntry, splitEntry, invalidSet)) {
                 if (block.defaultBlockState().is(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(splitEntry[0], splitEntry[1])))) {
                     removeSimpleBlock(block);
                     if (InventoryTabsConfig.debugEnabled.get()) {
-                        LOGGER.info("Excluding: " + block);
+                        LOGGER.info("Excluding: %s".formatted(block));
                     }
                 }
             }
@@ -134,7 +133,7 @@ public class TabProviderRegistry {
     private static void configAdd() {
         for (String included_tab : InventoryTabsConfig.includeTab.get()) {
             if (InventoryTabsConfig.debugEnabled.get()) {
-                LOGGER.info("Including: " + included_tab);
+                LOGGER.info("Including: %s".formatted(included_tab));
             }
             registerSimpleBlock(new ResourceLocation(included_tab));
         }
@@ -150,7 +149,7 @@ public class TabProviderRegistry {
      */
     public static void registerSimpleBlock(Block block) {
         if (InventoryTabsConfig.debugEnabled.get()) {
-            LOGGER.info("Registering: " + block);
+            LOGGER.info("Registering: %s".formatted(block));
         }
         SIMPLE_BLOCK_TAB_PROVIDER.addBlock(block);
     }
@@ -162,7 +161,7 @@ public class TabProviderRegistry {
      */
     public static void registerSimpleBlock(ResourceLocation blockId) {
         if (InventoryTabsConfig.debugEnabled.get()) {
-            LOGGER.info("Registering: " + blockId);
+            LOGGER.info("Registering: %s".formatted(blockId));
         }
         SIMPLE_BLOCK_TAB_PROVIDER.addBlock(blockId);
     }
