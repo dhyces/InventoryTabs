@@ -42,7 +42,8 @@ public class SimpleEntityTab extends Tab {
             return true;
         }
         if (InventoryTabsConfig.doSightChecksFlag.get()) {
-            if (!EntityUtil.canInteract(Minecraft.getInstance().player, entity)) {
+            var player = Minecraft.getInstance().player;
+            if (!EntityUtil.canInteract(player, entity, player.getReachDistance())) {
                 return true;
             }
         }
