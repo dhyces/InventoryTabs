@@ -1,7 +1,10 @@
 package com.kqp.inventorytabs.tabs.tab;
 
+import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
+import com.kqp.inventorytabs.tabs.provider.SimpleBlockTabProvider;
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
+import com.kqp.inventorytabs.util.EntityUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -13,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
@@ -39,7 +41,12 @@ public class SimpleEntityTab extends Tab {
         if (entity.isRemoved()) {
             return true;
         }
-        return entity.position().distanceTo(Minecraft.getInstance().player.position()) > 5;
+        if (InventoryTabsConfig.doSightChecksFlag.get()) {
+            if (!EntityUtil.canInteract(Minecraft.getInstance().player, entity)) {
+                return true;
+            }
+        }
+        return entity.position().distanceTo(Minecraft.getInstance().player.position()) > SimpleBlockTabProvider.SEARCH_DISTANCE * SimpleBlockTabProvider.SEARCH_DISTANCE;
     }
 
     @Override
