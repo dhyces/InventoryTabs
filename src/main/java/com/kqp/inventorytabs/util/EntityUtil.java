@@ -9,7 +9,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class EntityUtil {
     public static Optional<EntityHitResult> getLineOfSight(Entity entity, Player player, double distance) {
@@ -57,7 +59,29 @@ public class EntityUtil {
 
     public static boolean canInteract(Player player, Entity entity, double distance) {
         var playerEyePos = player.position().add(0, player.getEyeHeight(player.getPose()), 0);
-        var entityPos = entity.position().add(0, 0.5, 0);
+        var entityPos = entity.position();
+        for (Vec3 offset : getOffsets(entity)) {
+            var entityOffset = entityPos.add(offset);
+            var entityHitResult = entityClip(player, playerEyePos, entityOffset, null, distance);
+            if (entityHitResult != null && !entityHitResult.getType().equals(HitResult.Type.MISS) && entityHitResult.getEntity().is(entity)) {
+                var distToEntity = playerEyePos.distanceToSqr(entityHitResult.getLocation());
+                var blockHitResult = BlockUtil.blockClip(player, playerEyePos, entityOffset);
+                if (!blockHitResult.getType().equals(HitResult.Type.MISS)) {
+                    var distToBlock = playerEyePos.distanceToSqr(blockHitResult.getLocation());
+                    if (distToEntity <= distToBlock) {
+                        return true;
+                    }
+                } else {
+                    return distToEntity <= distance * distance;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Optional<HitResult> getClosest(Vec3 startVec, Vec3 endVec, Player player, @Nullable Entity entity, double distance) {
+        var playerEyePos = getPlayerEyePos(player);
+        var entityPos = entity != null ? entity.position().add(0, 0.5, 0) : playerEyePos.add(player.getViewVector(1).scale(distance));
         var entityHitResult = entityClip(player, playerEyePos, entityPos, entity, distance);
         if (entityHitResult != null && !entityHitResult.getType().equals(HitResult.Type.MISS)) {
             var distToEntity = playerEyePos.distanceToSqr(entityHitResult.getLocation());
@@ -65,14 +89,16 @@ public class EntityUtil {
             if (!blockHitResult.getType().equals(HitResult.Type.MISS)) {
                 var distToBlock = playerEyePos.distanceToSqr(blockHitResult.getLocation());
                 if (distToEntity <= distToBlock) {
-                    return true;
+                    return Optional.of(entityHitResult);
+                } else {
+                    return Optional.of(blockHitResult);
                 }
             } else {
-                return distToEntity <= distance * distance;
+                return distToEntity <= distance * distance ? Optional.of(entityHitResult) : Optional.empty();
             }
         }
 
-        return false;
+        return Optional.empty();
     }
 
     private static List<Vec3> getOffsets(Entity entity) {
