@@ -56,7 +56,8 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
             Tab tabOpened = null;
 
-            if ((Object) this instanceof InventoryScreen) {
+            // We need to check if it's an inventory screen or if the player is riding a horse/donky/mule and it's a horse inventory screen
+            if (((Object) this) instanceof InventoryScreen || (((Object) this) instanceof HorseInventoryScreen && client.player.getVehicle() != null)) {
                 tabOpened = tabManager.tabs.get(0);
             } else if (!tabManager.screenOpenedViaTab()) { // Consumes flag
                 // If the screen was NOT opened via tab,

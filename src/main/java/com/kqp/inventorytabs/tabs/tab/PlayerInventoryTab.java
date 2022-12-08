@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -18,7 +19,11 @@ public class PlayerInventoryTab extends Tab {
     @Override
     public void open() {
         Minecraft client = Minecraft.getInstance();
-        client.setScreen(new InventoryScreen(client.player));
+        if (client.player.getVehicle() == null) {
+            client.setScreen(new InventoryScreen(client.player));
+        } else {
+            client.player.sendOpenInventory();
+        }
     }
 
     @Override
