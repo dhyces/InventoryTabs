@@ -1,6 +1,7 @@
 package com.kqp.inventorytabs.mixin;
 
 import com.kqp.inventorytabs.init.InventoryTabsClient;
+import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
@@ -29,7 +30,7 @@ import java.util.Set;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class VanillaScreenTabAdder extends Screen implements TabRenderingHints {
-    private static final boolean isBRBLoaded = ModList.get().isLoaded("brb"); // Better Recipe Book compat
+    private static final boolean IS_BRB_LOADED = ModList.get().isLoaded("brb"); // Better Recipe Book compat
     
     protected VanillaScreenTabAdder(Component title) {
         super(title);
@@ -108,7 +109,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "render", at = @At("HEAD"))
     protected void drawBackgroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
             CallbackInfo callbackInfo) {
-        if (InventoryTabsClient.screenSupported(this)) {
+        if (InventoryTabsClient.shouldRenderTabs(this)) {
             if (!screenDoesDumbBlock()) {
                 Minecraft client = Minecraft.getInstance();
                 TabManager tabManager = ((TabManagerContainer) client).getTabManager();
@@ -121,7 +122,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "render", at = @At("TAIL"))
     protected void drawForegroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
                                       CallbackInfo callbackInfo) {
-        if (InventoryTabsClient.screenSupported(this)) {
+        if (InventoryTabsClient.shouldRenderTabs(this)) {
             Minecraft client = Minecraft.getInstance();
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
@@ -132,7 +133,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (InventoryTabsClient.screenSupported(this)) {
+        if (InventoryTabsClient.shouldRenderTabs(this)) {
             TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
 
             if (tabManager.mouseClicked(mouseX, mouseY, button)) {
@@ -143,7 +144,11 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (InventoryTabsClient.screenSupported(this)) {
+        var disableKeyMatches = InventoryTabsClient.DISABLE_TABS_KEY_BIND.matches(keyCode, scanCode);
+        if (disableKeyMatches) {
+            InventoryTabsConfig.renderTabs.set(!InventoryTabsConfig.renderTabs.get());
+        }
+        if (InventoryTabsClient.shouldRenderTabs(this)) {
             TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
 
             if (tabManager.keyPressed(keyCode, scanCode, modifiers)) {
@@ -152,9 +157,10 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
         }
     }
 
+
     @Override
     public int getTopRowXOffset() {
-        if (!isBRBLoaded) {
+        if (!IS_BRB_LOADED) {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
             if (screen instanceof InventoryScreen) {
                 if (((InventoryScreen) screen).getRecipeBookComponent().isVisible()) {
