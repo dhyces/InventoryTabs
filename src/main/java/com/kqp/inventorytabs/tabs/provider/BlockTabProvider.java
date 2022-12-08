@@ -21,17 +21,19 @@ public abstract class BlockTabProvider implements TabProvider {
     public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         Level level = player.level;
 
+        int reach = SEARCH_DISTANCE;
+
         // TODO: make this better and check line of sight
-        for (int x = -SEARCH_DISTANCE; x <= SEARCH_DISTANCE; x++) {
-            for (int y = -SEARCH_DISTANCE; y <= SEARCH_DISTANCE; y++) {
-                for (int z = -SEARCH_DISTANCE; z <= SEARCH_DISTANCE; z++) {
+        for (int x = -reach; x <= reach; x++) {
+            for (int y = -reach; y <= reach; y++) {
+                for (int z = -reach; z <= reach; z++) {
                     BlockPos blockPos = player.blockPosition().offset(x, y, z);
 
                     if (matches(level, blockPos)) {
                         boolean add = false;
 
                         if (InventoryTabsConfig.doSightChecksFlag.get()) {
-                            BlockHitResult hitResult = BlockUtil.getLineOfSight(blockPos, player, 5D);
+                            BlockHitResult hitResult = BlockUtil.getLineOfSight(blockPos, player, reach);
 
                             if (hitResult != null) {
                                 add = true;
@@ -41,7 +43,7 @@ public abstract class BlockTabProvider implements TabProvider {
                             Vec3 blockVec = new Vec3(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D,
                                     blockPos.getZ() + 0.5D);
 
-                            if (blockVec.subtract(playerHead).lengthSqr() <= SEARCH_DISTANCE * SEARCH_DISTANCE) {
+                            if (blockVec.subtract(playerHead).lengthSqr() <= reach * reach) {
                                 add = true;
                             }
                         }
@@ -60,7 +62,7 @@ public abstract class BlockTabProvider implements TabProvider {
     }
 
     /**
-     * Checks to see if block at passsed block position matches criteria.
+     * Checks to see if block at passed block position matches criteria.
      *
      * @param world
      * @param pos
