@@ -11,7 +11,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class SimpleEntityTabProvider extends EntityTabProvider {
     private final Set<ResourceLocation> entityIds = new HashSet<>();
@@ -22,10 +21,13 @@ public class SimpleEntityTabProvider extends EntityTabProvider {
     @Override
     public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         super.addAvailableTabs(player, tabs);
-//        Set<SimpleEntityTab> tabsToRemove = new HashSet<>();
-//        List<SimpleEntityTab> entityTabs = tabs.stream().filter(tab -> tab instanceof SimpleEntityTab).map(tab -> (SimpleEntityTab) tab)
-//                .filter(tab -> entityIds.contains(tab.entityId)).toList();
-//        Level world = player.level;
+        Set<SimpleEntityTab> tabsToRemove = new HashSet<>();
+        List<SimpleEntityTab> entityTabs = tabs.stream().filter(tab -> tab instanceof SimpleEntityTab).map(tab -> (SimpleEntityTab) tab)
+                .filter(tab -> entityIds.contains(tab.entityId)).toList();
+        Level world = player.level;
+
+        entityTabs.stream().filter(SimpleEntityTab::shouldBeRemoved).forEach(tabsToRemove::add);
+        tabs.removeAll(tabsToRemove);
     }
 
     @Override
