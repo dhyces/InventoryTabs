@@ -5,13 +5,17 @@ import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.provider.*;
+import com.kqp.inventorytabs.tabs.tab.VillagerTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
+import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -31,6 +35,8 @@ public class TabProviderRegistry {
             InventoryTabs.id("player_inventory_tab_provider"), new PlayerInventoryTabProvider());
     public static final SimpleEntityTabProvider ENTITY_TAB_PROVIDER = register(
             InventoryTabs.id("entity_tab_provider"), new SimpleEntityTabProvider());
+    public static final AdvancedEntityTabProvider ADVANCED_ENTITY_TAB_PROVIDER = register(
+            InventoryTabs.id("advanced_entity_tab_provider"), new AdvancedEntityTabProvider());
     public static final SimpleBlockTabProvider SIMPLE_BLOCK_TAB_PROVIDER = register(
             InventoryTabs.id("simple_block_tab_provider"), new SimpleBlockTabProvider());
     public static final ChestTabProvider CHEST_TAB_PROVIDER = register(
@@ -80,7 +86,11 @@ public class TabProviderRegistry {
             ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
                 var entity = entityType.create(fakeLevel);
                 if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
-                    registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+                    if (entity instanceof Villager) {
+                        registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), VillagerTab::new);
+                    } else if (!(entity instanceof Piglin) && !(entity instanceof Allay)) {
+                        registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
+                    }
                 }
             });
         }
@@ -197,6 +207,13 @@ public class TabProviderRegistry {
             LOGGER.info("Registering: " + entityId);
         }
         ENTITY_TAB_PROVIDER.addEntity(entityId);
+    }
+
+    public static void registerEntity(ResourceLocation entityId, AdvancedEntityTabProvider.TabFactory factory) {
+        if (InventoryTabsConfig.debugEnabled.get()) {
+            LOGGER.info("Registering: " + entityId);
+        }
+        ADVANCED_ENTITY_TAB_PROVIDER.addEntity(entityId, factory);
     }
 
     /**
