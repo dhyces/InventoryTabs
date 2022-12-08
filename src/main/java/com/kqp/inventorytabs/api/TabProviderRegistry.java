@@ -5,6 +5,7 @@ import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.provider.*;
+import com.kqp.inventorytabs.tabs.tab.RidableInventoryTab;
 import com.kqp.inventorytabs.tabs.tab.VillagerTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
@@ -13,6 +14,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Villager;
@@ -88,6 +90,8 @@ public class TabProviderRegistry {
                 if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
                     if (entity instanceof Villager) {
                         registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), VillagerTab::new);
+                    } else if (entity instanceof AbstractHorse) {
+                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), RidableInventoryTab::new);
                     } else if (!(entity instanceof Piglin) && !(entity instanceof Allay)) {
                         registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
                     }

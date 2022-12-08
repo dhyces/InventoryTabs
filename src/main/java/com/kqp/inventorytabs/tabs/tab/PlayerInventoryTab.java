@@ -17,7 +17,11 @@ public class PlayerInventoryTab extends Tab {
     @Override
     public void open() {
         Minecraft client = Minecraft.getInstance();
-        client.setScreen(new InventoryScreen(client.player));
+        if (client.player.getVehicle() == null) {
+            client.setScreen(new InventoryScreen(client.player));
+        } else {
+            client.player.sendOpenInventory();
+        }
     }
 
     @Override
