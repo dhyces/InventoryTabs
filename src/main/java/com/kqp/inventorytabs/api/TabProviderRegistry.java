@@ -83,20 +83,18 @@ public class TabProviderRegistry {
         configRemove(blockSet);
         configAdd();
         var fakeLevel = new FakeLevel();
-        if (InventoryTabsConfig.entityTabsBeta.get()) { // TODO: Remove this when it goes out of beta
-            ForgeRegistries.ENTITIES.forEach(entityType -> {
-                var entity = entityType.create(fakeLevel);
-                if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
-                    if (entity instanceof Villager) {
-                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), VillagerTab::new);
-                    } else if (entity instanceof AbstractHorse) {
-                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), RidableInventoryTab::new);
-                    } else if (!(entity instanceof Piglin)) {
-                        registerEntity(ForgeRegistries.ENTITIES.getKey(entityType));
-                    }
+        ForgeRegistries.ENTITIES.forEach(entityType -> {
+            var entity = entityType.create(fakeLevel);
+            if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
+                if (entity instanceof Villager) {
+                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), VillagerTab::new);
+                } else if (entity instanceof AbstractHorse) {
+                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), RidableInventoryTab::new);
+                } else if (!(entity instanceof Piglin)) {
+                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType));
                 }
-            });
-        }
+            }
+        });
 
         Minecraft client = Minecraft.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
