@@ -25,7 +25,7 @@ public class SimpleEntityTab extends Tab {
     public final Entity entity;
 
     public SimpleEntityTab(Entity entity) {
-        super(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier"))));
+        super(entity.getPickResult() != null ? entity.getPickResult() : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier"))));
         this.entity = entity;
         this.entityId = EntityType.getKey(entity.getType());
     }
@@ -57,13 +57,7 @@ public class SimpleEntityTab extends Tab {
 
     @Override
     public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
-        ItemStack itemStack = getItemStack();
-        ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
-        Font textRenderer = ((ScreenAccessor) currentScreen).getFont();
-        itemRenderer.blitOffset = 100.0F;
-        itemRenderer.renderAndDecorateItem(itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.renderGuiItemDecorations(textRenderer, itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.blitOffset = 0.0F;
+        super.renderTabIcon(poseStack, tabRenderInfo, currentScreen);
     }
 
     @Override
@@ -84,9 +78,5 @@ public class SimpleEntityTab extends Tab {
     @Override
     public int hashCode() {
         return Objects.hash(entity.getUUID());
-    }
-
-    public ItemStack getItemStack() {
-        return entity.getPickResult() != null ? entity.getPickResult() : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier")));
     }
 }

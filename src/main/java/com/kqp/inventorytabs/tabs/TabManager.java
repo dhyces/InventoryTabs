@@ -36,6 +36,7 @@ import static com.kqp.inventorytabs.init.InventoryTabs.*;
 public class TabManager {
     public final List<Tab> tabs;
     public Tab currentTab;
+    //private Comparator<Tab> currentSorter;
 
     private AbstractContainerScreen<?> currentScreen;
     public int currentPage = 0;
@@ -67,12 +68,7 @@ public class TabManager {
 
     private void refreshAvailableTabs() {
         // Remove old ones
-        for (int i = 0; i < tabs.size(); i++) {
-            if (tabs.get(i).shouldBeRemoved()) {
-                tabs.remove(i);
-                i--;
-            }
-        }
+        tabs.removeIf(Tab::shouldBeRemoved);
 
         AbstractClientPlayer player = Minecraft.getInstance().player;
 
