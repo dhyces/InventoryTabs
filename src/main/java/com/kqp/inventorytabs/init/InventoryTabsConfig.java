@@ -12,7 +12,6 @@ public class InventoryTabsConfig {
     public static ForgeConfigSpec.ConfigValue<List<String>> includeTab;
     public static ForgeConfigSpec.BooleanValue renderTabs;
     public static ForgeConfigSpec.BooleanValue debugEnabled;
-    public static ForgeConfigSpec.BooleanValue entityTabsBeta; // TODO: Remove when out of beta
 
     public static void setupConfig(ForgeConfigSpec.Builder builder) {
         builder.push("Client");
@@ -23,7 +22,5 @@ public class InventoryTabsConfig {
         includeTab = builder.define("includeTab", List.of());
         renderTabs = builder.define("renderTabs", () -> true);
         debugEnabled = builder.define("debugEnabled", () -> false);
-        builder.comment("BETA FEATURE - This will enable entity tabs and their rendering - BETA FEATURE");
-        entityTabsBeta = builder.define("entityTabsBeta", () -> false); // TODO: Remove when out of beta
     }
 }
