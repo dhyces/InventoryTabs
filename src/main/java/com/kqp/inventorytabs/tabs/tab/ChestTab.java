@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.kqp.inventorytabs.util.ChestUtil.getOtherChestBlockPos;
@@ -67,7 +67,6 @@ public class ChestTab extends SimpleBlockTab {
 
     public ItemStack getItemFrame() {
         Level world = Minecraft.getInstance().level;
-        itemStack = new ItemStack(world.getBlockState(blockPos).getBlock());
         BlockPos doubleChestPos = ChestUtil.isDouble(world, blockPos) ? getOtherChestBlockPos(world, blockPos) : blockPos;
         AABB box = new AABB(blockPos, doubleChestPos);
         double x = box.minX;    double y = box.minY;    double z = box.minZ;
@@ -75,11 +74,7 @@ public class ChestTab extends SimpleBlockTab {
         List<ItemFrame> list1 = world.getEntitiesOfClass(ItemFrame.class, new AABB(x-0.8, y, z, x1+1.8, y1+0.8, z1+0.8));
         List<ItemFrame> list2 = world.getEntitiesOfClass(ItemFrame.class, new AABB(x, y, z-0.8, x1+0.8, y1+0.8, z1+1.8));
         List<ItemFrame> list3 = world.getEntitiesOfClass(ItemFrame.class, new AABB(x, y-0.8, z, x1+0.8, y1+1.8, z1+0.8));
-        List<ItemFrame> list = new ArrayList<>();
-        Stream.of(list1, list2, list3).forEach(list::addAll);
-        if (!list.isEmpty()) {
-            itemStack = list.get(0).getItem();
-        }
-        return itemStack;
+        Optional<ItemFrame> optional = Stream.of(list1, list2, list3).flatMap(List::stream).findFirst();
+        return optional.map(ItemFrame::getItem).orElse(new ItemStack(world.getBlockState(blockPos).getBlock()));
     }
 }

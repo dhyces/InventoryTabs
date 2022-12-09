@@ -20,11 +20,11 @@ public class InventoryTab extends Tab {
         System.out.println("TESTING: Opening inventory tab");
         AbstractClientPlayer player = Minecraft.getInstance().player;
         Level level = Minecraft.getInstance().level;
-        System.out.println("Player: "+player);
-        System.out.println("Level: "+level);
+        System.out.println("Player: "+ player);
+        System.out.println("Level: "+ level);
         System.out.println("Item: "+ item);
-        System.out.println("ItemStack: "+new ItemStack(item));
-        System.out.println("Used hand: "+player.getUsedItemHand());
+        System.out.println("ItemStack: "+ new ItemStack(item));
+        System.out.println("Used hand: "+ player.getUsedItemHand());
         Item item = new ItemStack(this.item).getItem();
         item.use(level, player, player.getUsedItemHand());
         //itemId.use(world, player, player.getActiveHand());
