@@ -1,16 +1,10 @@
 package com.kqp.inventorytabs.tabs.tab;
 
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
-import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
 import com.kqp.inventorytabs.tabs.provider.SimpleBlockTabProvider;
-import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
 import com.kqp.inventorytabs.util.EntityUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
