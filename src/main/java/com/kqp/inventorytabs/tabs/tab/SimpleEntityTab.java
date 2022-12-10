@@ -56,11 +56,6 @@ public class SimpleEntityTab extends Tab {
     }
 
     @Override
-    public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
-        super.renderTabIcon(poseStack, tabRenderInfo, currentScreen);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
