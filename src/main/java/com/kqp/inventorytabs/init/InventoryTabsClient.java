@@ -10,9 +10,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.concurrent.CompletableFuture;
 
 public class InventoryTabsClient {
     public static final KeyMapping NEXT_TAB_KEY_BIND = new KeyMapping(
@@ -28,12 +31,24 @@ public class InventoryTabsClient {
         MinecraftForge.EVENT_BUS.addListener(InventoryTabsClient::onWorldLoad);
         MinecraftForge.EVENT_BUS.addListener(InventoryTabsClient::onKeyPressed);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(InventoryTabsClient::onRegisterKeyMappings);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(InventoryTabsClient::onReloadAssets);
+    }
+
+    private static void onReloadAssets(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener((pPreparationBarrier, pResourceManager, pPreparationsProfiler, pReloadProfiler, pBackgroundExecutor, pGameExecutor) -> {
+            return CompletableFuture.runAsync(InventoryTabsClient::reloadTabs, pGameExecutor).thenCompose(pPreparationBarrier::wait);
+        });
     }
 
     private static void onWorldLoad(LevelEvent.Load event) {
         if (event.getLevel().isClientSide()) {
-            Minecraft client = Minecraft.getInstance();
+            reloadTabs();
+        }
+    }
 
+    private static void reloadTabs() {
+        Minecraft client = Minecraft.getInstance();
+        if (client.level != null) {
             if (client.screen != null) {
                 TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
 
