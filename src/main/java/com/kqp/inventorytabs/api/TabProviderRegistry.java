@@ -84,15 +84,15 @@ public class TabProviderRegistry {
         configRemove(blockSet);
         configAdd();
         var fakeLevel = new FakeLevel();
-        ForgeRegistries.ENTITIES.forEach(entityType -> {
+        ForgeRegistries.ENTITY_TYPES.forEach(entityType -> {
             var entity = entityType.create(fakeLevel);
             if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
                 if (entity instanceof Villager) {
-                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), VillagerTab::new);
+                    registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), VillagerTab::new);
                 } else if (entity instanceof AbstractHorse) {
-                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType), RidableInventoryTab::new);
-                } else if (!(entity instanceof Piglin)) {
-                    registerEntity(ForgeRegistries.ENTITIES.getKey(entityType));
+                    registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), RidableInventoryTab::new);
+                } else if (!(entity instanceof Piglin) && !(entity instanceof Allay)) {
+                    registerSimpleEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));
                 }
             }
         });
@@ -113,6 +113,7 @@ public class TabProviderRegistry {
         registerInventoryTab(new ResourceLocation("onastick", "stonecutter_on_a_stick"));
         registerInventoryTab(new ResourceLocation("craftingpad", "craftingpad"));
     }
+
     public static boolean isValid(String overrideEntry, String[] splitEntry, Set<String> invalidSet) {
         if (splitEntry.length != 2) {
             invalidSet.add(overrideEntry);
@@ -204,7 +205,7 @@ public class TabProviderRegistry {
         UNIQUE_TAB_PROVIDER.addUniqueBlock(block);
     }
 
-    public static void registerEntity(ResourceLocation entityId) {
+    public static void registerSimpleEntity(ResourceLocation entityId) {
         if (InventoryTabsConfig.debugEnabled.get()) {
             LOGGER.info("Registering: " + entityId);
         }
