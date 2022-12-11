@@ -20,6 +20,8 @@
   "client": [
     "CreativeModeInventoryScreenMixin",
     "KeyBindsList$KeyEntryMixin_SoftConflict",
-    "KeyMappingMixin_SoftConflict"
+    "KeyMappingMixin_SoftConflict",
+    "LocalPlayerMixin",
+    "ScreenMixin"
   ]
 }
