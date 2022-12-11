@@ -56,7 +56,7 @@ public class ChestTab extends SimpleBlockTab {
 
     @Override
     public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
-        ItemStack itemStack = getItemFrame();
+        itemStack = getItemFrame();
         ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
         Font textRenderer = ((ScreenAccessor) currentScreen).getFont();
         itemRenderer.blitOffset = 100.0F;
