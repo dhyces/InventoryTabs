@@ -17,6 +17,8 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;

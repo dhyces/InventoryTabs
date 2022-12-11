@@ -15,6 +15,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -54,10 +57,17 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
             tabManager.onScreenOpen((AbstractContainerScreen<?>) (Object) this);
 
+            if (tabManager.isResized) {
+                tabManager.isResized = false;
+                return;
+            }
+
             Tab tabOpened = null;
 
-            // We need to check if it's an inventory screen or if the player is riding a horse/donky/mule and it's a horse inventory screen
-            if (((Object) this) instanceof InventoryScreen || (((Object) this) instanceof HorseInventoryScreen && client.player.getVehicle() != null)) {
+            var thiz = (AbstractContainerScreen<?>) (Object) this;
+
+            // We need to check if it's an inventory screen
+            if (thiz instanceof InventoryScreen || tabManager.inventoryTabModified) {
                 tabOpened = tabManager.tabs.get(0);
             } else if (!tabManager.screenOpenedViaTab()) { // Consumes flag
                 // If the screen was NOT opened via tab,
@@ -112,8 +122,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
             CallbackInfo callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs(this)) {
             if (!screenDoesDumbBlock()) {
-                Minecraft client = Minecraft.getInstance();
-                TabManager tabManager = ((TabManagerContainer) client).getTabManager();
+                TabManager tabManager = TabManager.getInstance();
 
                 tabManager.tabRenderer.renderBackground(poseStack);
             }
@@ -124,8 +133,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     protected void drawForegroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
                                       CallbackInfo callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs(this)) {
-            Minecraft client = Minecraft.getInstance();
-            TabManager tabManager = ((TabManagerContainer) client).getTabManager();
+            TabManager tabManager = TabManager.getInstance();
 
             tabManager.tabRenderer.renderForeground(poseStack, mouseX, mouseY);
             tabManager.tabRenderer.renderHoverTooltips(poseStack, mouseX, mouseY);
@@ -135,7 +143,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs(this)) {
-            TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
+            TabManager tabManager = TabManager.getInstance();
 
             if (tabManager.mouseClicked(mouseX, mouseY, button)) {
                 callbackInfo.setReturnValue(true);
@@ -150,7 +158,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
             InventoryTabsConfig.renderTabs.set(!InventoryTabsConfig.renderTabs.get());
         }
         if (InventoryTabsClient.shouldRenderTabs(this)) {
-            TabManager tabManager = ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
+            TabManager tabManager = TabManager.getInstance();
 
             if (tabManager.keyPressed(keyCode, scanCode, modifiers)) {
                 callbackInfo.setReturnValue(true);
