@@ -25,7 +25,7 @@ public class TabRenderer {
     private static final ResourceLocation TABS_TEXTURE = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     private static final ResourceLocation BUTTONS_TEXTURE = InventoryTabs.id("textures/gui/buttons.png");
 
-    public static final int TAB_WIDTH = 28;
+    public static final int TAB_WIDTH = 26;
     public static final int TAB_HEIGHT = 32;
     public static final int BUTTON_WIDTH = 15;
     public static final int BUTTON_HEIGHT = 13;
@@ -110,7 +110,6 @@ public class TabRenderer {
 
     private void drawPageText(PoseStack poseStack) {
         if (tabManager.getMaxPages() > 1 && pageTextRefreshTime > 0) {
-            // RenderSystem.pushMatrix();
             // TODO: Figure out rendering
 
             int color = 0xFFFFFFFF;
@@ -118,7 +117,6 @@ public class TabRenderer {
             if (pageTextRefreshTime <= 20) {
                 RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
-                // RenderSystem.disableAlphaTest();
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.colorMask(true, true, true, true);
                 float transparency = pageTextRefreshTime / 20F;
@@ -140,7 +138,6 @@ public class TabRenderer {
 
             Minecraft.getInstance().font.draw(poseStack, text, x, y, color);
 
-            // RenderSystem.popMatrix();
         }
     }
 
@@ -225,14 +222,14 @@ public class TabRenderer {
                 }
 
                 // Calc texture dimensions
-                tabInfo.texW = 28;
+                tabInfo.texW = 26;
                 tabInfo.texH = 32;
 
                 // Calc texture U
                 if (i == 0 || i == maxRowLength) {
                     tabInfo.texU = 0;
                 } else {
-                    tabInfo.texU = 28;
+                    tabInfo.texU = 26;
                 }
 
                 // Calc texture V
