@@ -1,14 +1,14 @@
 modLoader="javafml"
-loaderVersion="[43,)"
+loaderVersion="[44,)"
 license="MIT"
-issueTrackerURL="https://github.com/Andrew6rant/inventorytabs/issues"
+issueTrackerURL="https://github.com/dhyces/InventoryTabs/issues"
 [[mods]]
 modId="inventorytabs"
 version="${file.jarVersion}"
 displayName="Inventory Tabs"
-displayURL="https://github.com/Andrew6rant/inventorytabs"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/inventory-tabs-forge"
 logoFile="icon.png"
-authors="KQP, LiamMCW, Andrew6rant (Andrew Grant), dhyces"
+authors="KQP, LiamMCW, Andrew6rant (Andrew Grant), Dhyces"
 description='''
 Adds tabs to your inventory that lead to nearby blocks.
 '''
