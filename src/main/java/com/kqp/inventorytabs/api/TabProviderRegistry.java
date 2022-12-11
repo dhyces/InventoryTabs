@@ -18,6 +18,8 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -89,7 +91,7 @@ public class TabProviderRegistry {
             if (entity instanceof Container || entity instanceof InventoryCarrier || entity instanceof ContainerListener) {
                 if (entity instanceof Villager) {
                     registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), VillagerTab::new);
-                } else if (entity instanceof AbstractHorse) {
+                } else if (entity instanceof AbstractHorse || entity instanceof ChestBoat) {
                     registerEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType), RidableInventoryTab::new);
                 } else if (!(entity instanceof Piglin) && !(entity instanceof Allay)) {
                     registerSimpleEntity(ForgeRegistries.ENTITY_TYPES.getKey(entityType));

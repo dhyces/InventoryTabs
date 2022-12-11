@@ -85,8 +85,7 @@ public class SimpleBlockTab extends Tab {
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
 
         if (blockEntity != null) {
-            CompoundTag tag = new CompoundTag();
-            blockEntity.saveWithoutMetadata(); // had to use an accesswidener for this in 1.18
+            CompoundTag tag = blockEntity.saveWithoutMetadata();
 
             if (tag.contains("CustomName", Tag.TAG_STRING)) {
                 return Component.Serializer.fromJson(tag.getString("CustomName"));
