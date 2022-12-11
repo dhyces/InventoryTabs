@@ -9,6 +9,7 @@ import com.kqp.inventorytabs.tabs.tab.RidableInventoryTab;
 import com.kqp.inventorytabs.tabs.tab.VillagerTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
@@ -135,7 +136,7 @@ public class TabProviderRegistry {
         for (String overrideEntry : tagSet) {
             String[] splitEntry = overrideEntry.split(":"); // split into two parts: namespace, id
             if (isValid(overrideEntry, splitEntry, invalidSet)) {
-                if (block.defaultBlockState().is(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(splitEntry[0], splitEntry[1])))) {
+                if (block.defaultBlockState().is(TagKey.create(Registries.BLOCK, new ResourceLocation(splitEntry[0], splitEntry[1])))) {
                     removeSimpleBlock(block);
                     if (InventoryTabsConfig.debugEnabled.get()) {
                         LOGGER.info("Excluding: %s".formatted(block));

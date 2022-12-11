@@ -2,13 +2,17 @@ package com.kqp.inventorytabs.init;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.AbortableIterationConsumer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameRules;
@@ -21,8 +25,10 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LightChunkGetter;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.LevelEntityGetter;
+import net.minecraft.world.level.entity.LevelEntityGetterAdapter;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
@@ -44,11 +50,16 @@ import java.util.function.Consumer;
 public class FakeLevel extends Level implements LightChunkGetter {
 
     public FakeLevel() {
-        super(new FakeWritableLevelData(), ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("overworld")), RegistryAccess.builtinCopy().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getOrCreateHolderOrThrow(ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation("overworld"))), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L, 0);
+        super(new FakeWritableLevelData(), ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), Minecraft.getInstance().level.dimensionTypeRegistration(), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L, 0);
     }
 
     @Override
     public void sendBlockUpdated(BlockPos pPos, BlockState pOldState, BlockState pNewState, int pFlags) {
+
+    }
+
+    @Override
+    public void playSeededSound(@Nullable Player p_262953_, double p_263004_, double p_263398_, double p_263376_, Holder<SoundEvent> p_263359_, SoundSource p_263020_, float p_263055_, float p_262914_, long p_262991_) {
 
     }
 
@@ -58,7 +69,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     }
 
     @Override
-    public void playSeededSound(@Nullable Player pPlayer, Entity pEntity, SoundEvent pSoundEvent, SoundSource pSoundSource, float pVolume, float pPitch, long pSeed) {
+    public void playSeededSound(@Nullable Player p_220372_, Entity p_220373_, Holder<SoundEvent> p_263500_, SoundSource p_220375_, float p_220376_, float p_220377_, long p_220378_) {
 
     }
 
@@ -110,7 +121,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     protected LevelEntityGetter<Entity> getEntities() {
-        return new LevelEntityGetter<>() {
+        return new LevelEntityGetter<Entity>() {
             @Nullable
             @Override
             public Entity get(int pId) {
@@ -130,7 +141,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
             }
 
             @Override
-            public <U extends Entity> void get(EntityTypeTest<Entity, U> pTest, Consumer<U> pConsumer) {
+            public <U extends Entity> void get(EntityTypeTest<Entity, U> p_156935_, AbortableIterationConsumer<U> p_261602_) {
 
             }
 
@@ -140,7 +151,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
             }
 
             @Override
-            public <U extends Entity> void get(EntityTypeTest<Entity, U> pTest, AABB pBounds, Consumer<U> pConsumer) {
+            public <U extends Entity> void get(EntityTypeTest<Entity, U> p_156932_, AABB p_156933_, AbortableIterationConsumer<U> p_261542_) {
 
             }
         };
@@ -251,7 +262,13 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     public RegistryAccess registryAccess() {
-        return RegistryAccess.builtinCopy();
+        return RegistryAccess.EMPTY;
+    }
+
+    @NotNull
+    @Override
+    public FeatureFlagSet enabledFeatures() {
+        return Minecraft.getInstance().level.enabledFeatures();
     }
 
     @Override
@@ -268,7 +285,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     public Holder<Biome> getUncachedNoiseBiome(int pX, int pY, int pZ) {
-        return registryAccess().registry(Registry.BIOME_REGISTRY).get().getOrCreateHolderOrThrow(Biomes.BADLANDS);
+        return registryAccess().registry(Registries.BIOME).get().getHolderOrThrow(Biomes.BADLANDS);
     }
 
     @Nullable
