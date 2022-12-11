@@ -8,6 +8,7 @@ import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
 import com.kqp.inventorytabs.tabs.render.TabRenderer;
 import com.kqp.inventorytabs.tabs.render.TabRenderingHints;
 import com.kqp.inventorytabs.tabs.tab.PlayerInventoryTab;
+import com.kqp.inventorytabs.tabs.tab.SimpleEntityTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.MouseUtil;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -41,6 +42,8 @@ public class TabManager {
     private AbstractContainerScreen<?> currentScreen;
     public int currentPage = 0;
     public boolean tabOpenedRecently;
+    public boolean inventoryTabModified; // used for when the player's inventory is controlled by the server, ie horse, chest boat
+    public boolean isResized; // used when the mc window is resized so the current tab is not lost
     public int prevCursorStackSlot = -1;
 
     public final TabRenderer tabRenderer;
@@ -91,7 +94,7 @@ public class TabManager {
         }
 
         // Sort
-        tabs.sort(Comparator.comparing(Tab::getPriority).reversed().thenComparing(tab -> tab.getHoverText().getString()));
+        tabs.sort(Comparator.<Tab, Integer>comparing(o -> o instanceof SimpleEntityTab ? -1 : 1).thenComparing(Tab::getPriority).reversed().thenComparing(tab -> tab.getHoverText().getString()));
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -244,6 +247,7 @@ public class TabManager {
 
     public void onOpenTab(Tab tab) {
         if (currentTab != null && currentTab != tab) {
+            inventoryTabModified = false;
             currentTab.onClose();
         }
 
