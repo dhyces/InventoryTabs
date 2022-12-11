@@ -1,5 +1,5 @@
 # InventoryTabs
-Adds tabs to access nearby blocks without leaving your inventory. Completely client-side. Requires Cloth Config API.
+Adds tabs to access nearby blocks without leaving your inventory. Completely client-side.
 
 <table><tr><td width="34.5%">
 
@@ -10,8 +10,6 @@ Adds tabs to access nearby blocks without leaving your inventory. Completely cli
 ![Showcase GIF](https://raw.githubusercontent.com/Andrew6rant/inventorytabs/1.18.x/.github/resources/Tabs_showcase.gif)
 
 </td></tr></table>
-
-Also has [BigInv](https://github.com/SollyW/BigInv) and [PlayerEx](https://www.curseforge.com/minecraft/mc-mods/playerex) support!
 
 <table><tr><td width="36.5%">
 
@@ -42,7 +40,7 @@ New in 0.9.0: Entity support!
 
 ## Devs
 ### Importing
-To add **Inventory Tabs** to your project, you need to add ``https://jitpack.io`` as a repo and ``com.github.Andrew6rant:InventoryTabs:inventorytabs-(mod version)-(Minecraft version)`` as a dependency. For example:
+To add **Inventory Tabs** to your project, you need to add ``https://jitpack.io`` as a repo and ``com.github.dhyces:InventoryTabs:inventorytabs-(mod version)-(Minecraft version)-forge`` as a dependency. For example:
 ```
 repositories {
 	maven {
@@ -51,7 +49,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation "com.github.Andrew6rant:InventoryTabs:inventorytabs-0.6.1-1.19.x"
+	modImplementation "com.github.dhyces:InventoryTabs:inventorytabs-0.9.0-1.19.2-forge"
 }
 ```
 
