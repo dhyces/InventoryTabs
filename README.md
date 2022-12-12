@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation "com.github.dhyces:InventoryTabs:inventorytabs-0.9.0-1.19.2-forge"
+	implementation fg.deobf("com.github.dhyces:InventoryTabs:inventorytabs-0.9.0-1.19.2-forge")
 }
 ```
 
