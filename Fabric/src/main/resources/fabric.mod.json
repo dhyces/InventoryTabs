@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "inventorytabs",
+  "version": "${version}",
+  "name": "Inventory Tabs",
+  "description": "Adds tabs to your inventory that lead to nearby blocks.",
+  "authors": [
+    "KQP",
+    "LiamMCW",
+    "Andrew6rant (Andrew Grant)"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Andrew6rant/inventorytabs",
+    "sources": "https://github.com/Andrew6rant/inventorytabs",
+    "issues": "https://github.com/Andrew6rant/inventorytabs/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/inventorytabs/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.kqp.inventorytabs.FabricInventoryTabs"
+    ],
+    "client": [
+      "com.kqp.inventorytabs.FabricInventoryTabsClient"
+    ],
+    "modmenu": [
+      "com.kqp.inventorytabs.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "inventorytabs.mixins.json",
+    "inventorytabs.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.12",
+    "fabric": ">=0.55.3",
+    "minecraft": ">=1.19 <1.19.3",
+    "cloth-config2": "*"
+  },
+  "custom": {
+    "modmenu": [
+      "com.kqp.inventorytabs.FabricConfig"
+    ]
+  },
+  "suggests": {
+    "biginv": "*",
+    "playerex": "*",
+    "modmenu": "*"
+  }
+}
