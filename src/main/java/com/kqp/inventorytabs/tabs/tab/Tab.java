@@ -2,10 +2,10 @@ package com.kqp.inventorytabs.tabs.tab;
 
 import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -66,13 +66,11 @@ public abstract class Tab {
      * @param currentScreen AbstractContainerScreen
      */
     @OnlyIn(Dist.CLIENT)
-    public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
-        ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
+    public void renderTabIcon(GuiGraphics gui, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
+        //ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
         Font font = ((ScreenAccessor) currentScreen).getFont();
-        itemRenderer.blitOffset = 100.0F;
+        // itemRenderer.blitOffset = 100.0F;
         // RenderSystem.enableRescaleNormal();
-        itemRenderer.renderAndDecorateItem(renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.renderGuiItemDecorations(font, renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.blitOffset = 0.0F;
+        gui.renderItem(renderItemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
     }
 }

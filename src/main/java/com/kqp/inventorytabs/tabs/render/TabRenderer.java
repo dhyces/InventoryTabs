@@ -1,21 +1,21 @@
 package com.kqp.inventorytabs.tabs.render;
 
+import static com.kqp.inventorytabs.init.InventoryTabs.*;
+
+import java.awt.Rectangle;
+
 import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.mixin.accessor.AbstractContainerScreenAccessor;
 import com.kqp.inventorytabs.tabs.TabManager;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.awt.*;
-
-import static com.kqp.inventorytabs.init.InventoryTabs.*;
 
 /**
  * Handles the rendering of tabs.
@@ -40,8 +40,8 @@ public class TabRenderer {
         this.tabManager = tabManager;
     }
 
-    public void renderBackground(PoseStack poseStack) {
-        poseStack.pushPose();
+    public void renderBackground(GuiGraphics gui) {
+        gui.pose().pushPose();
 
         tabRenderInfos = getTabRenderInfos();
 
@@ -50,14 +50,14 @@ public class TabRenderer {
 
             if (tabRenderInfo != null) {
                 if (tabRenderInfo.tabReference != tabManager.currentTab) {
-                    renderTab(poseStack, tabRenderInfo);
+                    renderTab(gui, tabRenderInfo);
                 }
             }
         }
-        poseStack.popPose();
+        gui.pose().popPose();
     }
 
-    public void renderForeground(PoseStack poseStack, double mouseX, double mouseY) {
+    public void renderForeground(GuiGraphics gui, double mouseX, double mouseY) {
         RenderSystem.setShaderTexture(0, TABS_TEXTURE);
 
         for (int i = 0; i < tabRenderInfos.length; i++) {
@@ -65,17 +65,17 @@ public class TabRenderer {
 
             if (tabRenderInfo != null) {
                 if (tabRenderInfo.tabReference == tabManager.currentTab) {
-                    renderTab(poseStack, tabRenderInfo);
+                    renderTab(gui, tabRenderInfo);
                 }
             }
         }
 
-        drawButtons(poseStack, mouseX, mouseY);
+        drawButtons(gui, mouseX, mouseY);
 
-        drawPageText(poseStack);
+        drawPageText(gui);
     }
 
-    private void drawButtons(PoseStack poseStack, double mouseX, double mouseY) {
+    private void drawButtons(GuiGraphics gui, double mouseX, double mouseY) {
         AbstractContainerScreen<?> currentScreen = tabManager.getCurrentScreen();
 
         RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
@@ -94,7 +94,7 @@ public class TabRenderer {
         int u = 0;
         u += tabManager.canGoBackAPage() && hovered ? BUTTON_WIDTH * 2 : 0;
         int v = tabManager.canGoBackAPage() ? 0 : 13;
-        currentScreen.blit(poseStack, x, y, u, v, BUTTON_WIDTH, BUTTON_HEIGHT);
+        gui.blit(BUTTONS_TEXTURE, x, y, u, v, BUTTON_WIDTH, BUTTON_HEIGHT);
 
         // Drawing forward button
         x = oX + width + 4;
@@ -105,17 +105,17 @@ public class TabRenderer {
         u = 15;
         u += tabManager.canGoForwardAPage() && hovered ? BUTTON_WIDTH * 2 : 0;
         v = tabManager.canGoForwardAPage() ? 0 : 13;
-        currentScreen.blit(poseStack, x, y, u, v, BUTTON_WIDTH, BUTTON_HEIGHT);
+        gui.blit(BUTTONS_TEXTURE, x, y, u, v, BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 
-    private void drawPageText(PoseStack poseStack) {
+    private void drawPageText(GuiGraphics gui) {
         if (tabManager.getMaxPages() > 1 && pageTextRefreshTime > 0) {
             // TODO: Figure out rendering
 
             int color = 0xFFFFFFFF;
 
             if (pageTextRefreshTime <= 20) {
-                RenderSystem.disableTexture();
+                //RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.colorMask(true, true, true, true);
@@ -126,7 +126,7 @@ public class TabRenderer {
             }
 
             AbstractContainerScreen<?> currentScreen = tabManager.getCurrentScreen();
-            Font font = Minecraft.getInstance().font;
+            Font font = mc.font;
 
             int height = ((AbstractContainerScreenAccessor) currentScreen).getImageHeight();
             int oX = currentScreen.width;
@@ -136,22 +136,21 @@ public class TabRenderer {
             int x = (oX - font.width(text)) / 2;
             int y = oY - 34;
 
-            Minecraft.getInstance().font.draw(poseStack, text, x, y, color);
-
+            gui.drawString(font, text, x, y, color);
         }
     }
 
-    private void renderTab(PoseStack poseStack, TabRenderInfo tabRenderInfo) {
+    private void renderTab(GuiGraphics gui, TabRenderInfo tabRenderInfo) {
         AbstractContainerScreen<?> currentScreen = tabManager.getCurrentScreen();
 
         RenderSystem.setShaderTexture(0, TABS_TEXTURE);
-        currentScreen.blit(poseStack, tabRenderInfo.x, tabRenderInfo.y, tabRenderInfo.texU, tabRenderInfo.texV,
+        gui.blit(TABS_TEXTURE, tabRenderInfo.x, tabRenderInfo.y, tabRenderInfo.texU, tabRenderInfo.texV,
                 tabRenderInfo.texW, tabRenderInfo.texH);
 
-        tabRenderInfo.tabReference.renderTabIcon(poseStack, tabRenderInfo, currentScreen);
+        tabRenderInfo.tabReference.renderTabIcon(gui, tabRenderInfo, currentScreen);
     }
 
-    public void renderHoverTooltips(PoseStack poseStack, double mouseX, double mouseY) {
+    public void renderHoverTooltips(GuiGraphics gui, double mouseX, double mouseY) {
         for (int i = 0; i < tabRenderInfos.length; i++) {
             TabRenderInfo tabRenderInfo = tabRenderInfos[i];
 
@@ -159,7 +158,7 @@ public class TabRenderer {
                 Rectangle itemRec = new Rectangle(tabRenderInfo.itemX, tabRenderInfo.itemY, 16, 16);
 
                 if (itemRec.contains(mouseX, mouseY)) {
-                    tabManager.getCurrentScreen().renderTooltip(poseStack, tabRenderInfo.tabReference.getHoverText(),
+                    gui.renderTooltip(InventoryTabs.mc.font, tabRenderInfo.tabReference.getHoverText(),
                             (int) mouseX, (int) mouseY);
                 }
             }

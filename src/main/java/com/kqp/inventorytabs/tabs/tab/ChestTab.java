@@ -1,14 +1,18 @@
 package com.kqp.inventorytabs.tabs.tab;
 
-import com.kqp.inventorytabs.mixin.accessor.ScreenAccessor;
+import static com.kqp.inventorytabs.util.ChestUtil.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.kqp.inventorytabs.tabs.render.TabRenderInfo;
 import com.kqp.inventorytabs.util.ChestUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,17 +23,13 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static com.kqp.inventorytabs.util.ChestUtil.getOtherChestBlockPos;
-
 /**
  * Tab for chests
  */
 public class ChestTab extends SimpleBlockTab {
     ItemStack itemStack;
+    private final Minecraft mc = Minecraft.getInstance();
+
     public ChestTab(ResourceLocation blockId, BlockPos blockPos) {
         super(blockId, blockPos);
         this.itemStack = new ItemStack(ForgeRegistries.BLOCKS.getValue(blockId));
@@ -55,18 +55,18 @@ public class ChestTab extends SimpleBlockTab {
     }
 
     @Override
-    public void renderTabIcon(PoseStack poseStack, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
+    public void renderTabIcon(GuiGraphics gui, TabRenderInfo tabRenderInfo, AbstractContainerScreen<?> currentScreen) {
         itemStack = getItemFrame();
-        ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
-        Font textRenderer = ((ScreenAccessor) currentScreen).getFont();
-        itemRenderer.blitOffset = 100.0F;
-        itemRenderer.renderAndDecorateItem(itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.renderGuiItemDecorations(textRenderer, itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
-        itemRenderer.blitOffset = 0.0F;
+        //ItemRenderer itemRenderer = ((ScreenAccessor) currentScreen).getItemRenderer();
+        //Font textRenderer = ((ScreenAccessor) currentScreen).getFont();
+        //gui.blitOffset = 100.0F;
+        gui.renderItem(itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        //gui.renderItemDecorations(textRenderer, itemStack, tabRenderInfo.itemX, tabRenderInfo.itemY);
+        //itemRenderer.blitOffset = 0.0F;
     }
 
     public ItemStack getItemFrame() {
-        Level world = Minecraft.getInstance().level;
+        Level world = mc.level;
         BlockPos doubleChestPos = ChestUtil.isDouble(world, blockPos) ? getOtherChestBlockPos(world, blockPos) : blockPos;
         AABB box = new AABB(blockPos, doubleChestPos);
         double x = box.minX;    double y = box.minY;    double z = box.minZ;

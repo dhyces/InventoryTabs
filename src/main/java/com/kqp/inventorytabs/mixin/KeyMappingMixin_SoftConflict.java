@@ -1,10 +1,9 @@
 package com.kqp.inventorytabs.mixin;
 
-import com.kqp.inventorytabs.init.InventoryTabsClient;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,9 +12,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
+import com.kqp.inventorytabs.init.InventoryTabs;
+import com.kqp.inventorytabs.init.InventoryTabsClient;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.Screen;
 
 @Mixin(KeyMapping.class)
 public abstract class KeyMappingMixin_SoftConflict {
@@ -31,7 +33,7 @@ public abstract class KeyMappingMixin_SoftConflict {
 	
 	@Inject(method = "click", at = @At(value = "FIELD", target = "Lnet/minecraft/client/KeyMapping;clickCount:I"),
 			locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void onKeyPressed(InputConstants.Key key, CallbackInfo ci, KeyMapping binding) {
+	private static void onKeyPressed(InputConstants.Key key, CallbackInfo ci, Iterator<KeyMapping> var2, KeyMapping binding) {
 		KeyMappingMixin_SoftConflict alternative = (KeyMappingMixin_SoftConflict) (Object) findAlternative(key, binding, InventoryTabsClient.NEXT_TAB_KEY_BIND);
 		if(alternative != null) {
 			alternative.clickCount++;
@@ -49,7 +51,7 @@ public abstract class KeyMappingMixin_SoftConflict {
 	}
 	
 	private static KeyMapping findAlternative(InputConstants.Key key, KeyMapping binding, KeyMapping alternativeTo) {
-		Screen screen = Minecraft.getInstance().screen;
+		Screen screen = InventoryTabs.mc.screen;
 		if(binding == alternativeTo && !InventoryTabsClient.screenSupported(screen)) {
 			for(KeyMapping value : ALL.values()) {
 				KeyMappingMixin_SoftConflict self = (KeyMappingMixin_SoftConflict) (Object) value;

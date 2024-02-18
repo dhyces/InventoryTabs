@@ -1,12 +1,32 @@
 package com.kqp.inventorytabs.api;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.kqp.inventorytabs.init.FakeLevel;
 import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
-import com.kqp.inventorytabs.tabs.provider.*;
+import com.kqp.inventorytabs.tabs.provider.AdvancedEntityTabProvider;
+import com.kqp.inventorytabs.tabs.provider.ChestTabProvider;
+import com.kqp.inventorytabs.tabs.provider.EnderChestTabProvider;
+import com.kqp.inventorytabs.tabs.provider.InventoryTabProvider;
+import com.kqp.inventorytabs.tabs.provider.LecternTabProvider;
+import com.kqp.inventorytabs.tabs.provider.PlayerInventoryTabProvider;
+import com.kqp.inventorytabs.tabs.provider.ShulkerBoxTabProvider;
+import com.kqp.inventorytabs.tabs.provider.SimpleBlockTabProvider;
+import com.kqp.inventorytabs.tabs.provider.SimpleEntityTabProvider;
+import com.kqp.inventorytabs.tabs.provider.TabProvider;
+import com.kqp.inventorytabs.tabs.provider.UniqueTabProvider;
 import com.kqp.inventorytabs.tabs.tab.RidableInventoryTab;
 import com.kqp.inventorytabs.tabs.tab.VillagerTab;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -19,13 +39,36 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.vehicle.ChestBoat;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.AbstractBannerBlock;
+import net.minecraft.world.level.block.AbstractChestBlock;
+import net.minecraft.world.level.block.AbstractSkullBlock;
+import net.minecraft.world.level.block.AnvilBlock;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.BellBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CartographyTableBlock;
+import net.minecraft.world.level.block.CommandBlock;
+import net.minecraft.world.level.block.ComparatorBlock;
+import net.minecraft.world.level.block.ConduitBlock;
+import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.level.block.DaylightDetectorBlock;
+import net.minecraft.world.level.block.EndGatewayBlock;
+import net.minecraft.world.level.block.EndPortalBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.FletchingTableBlock;
+import net.minecraft.world.level.block.GrindstoneBlock;
+import net.minecraft.world.level.block.JigsawBlock;
+import net.minecraft.world.level.block.JukeboxBlock;
+import net.minecraft.world.level.block.LoomBlock;
+import net.minecraft.world.level.block.SculkSensorBlock;
+import net.minecraft.world.level.block.SignBlock;
+import net.minecraft.world.level.block.SpawnerBlock;
+import net.minecraft.world.level.block.StonecutterBlock;
+import net.minecraft.world.level.block.StructureBlock;
 import net.minecraft.world.level.block.piston.MovingPistonBlock;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.*;
 
 /**
  * Registry for tab providers.
@@ -98,7 +141,7 @@ public class TabProviderRegistry {
             }
         });
 
-        Minecraft client = Minecraft.getInstance();
+        Minecraft client = InventoryTabs.mc;
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
         tabManagerContainer.getTabManager().removeTabs();
         LOGGER.info(configMsg.equals("save") ? "InventoryTabs: Config saved!": "InventoryTabs: Config %sed!".formatted(configMsg));
