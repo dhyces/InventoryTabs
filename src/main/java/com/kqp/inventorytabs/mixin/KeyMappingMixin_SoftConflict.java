@@ -33,9 +33,9 @@ public abstract class KeyMappingMixin_SoftConflict {
 	
 	@Inject(method = "click", at = @At(value = "FIELD", target = "Lnet/minecraft/client/KeyMapping;clickCount:I"),
 			locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void onKeyPressed(InputConstants.Key key, CallbackInfo ci, Iterator<KeyMapping> var2, KeyMapping binding) {
+	private static void onKeyPressed(InputConstants.Key key, CallbackInfo ci, KeyMapping binding) {
 		KeyMappingMixin_SoftConflict alternative = (KeyMappingMixin_SoftConflict) (Object) findAlternative(key, binding, InventoryTabsClient.NEXT_TAB_KEY_BIND);
-		if(alternative != null) {
+		if (alternative != null) {
 			alternative.clickCount++;
 			ci.cancel();
 		}
@@ -44,19 +44,19 @@ public abstract class KeyMappingMixin_SoftConflict {
 	@Inject(method = "set", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/KeyMapping;setDown(Z)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void keyPressed(InputConstants.Key key, boolean pressed, CallbackInfo ci, Iterator<KeyMapping> var2, KeyMapping keymapping) {
 		KeyMapping alternative = findAlternative(key, keymapping, InventoryTabsClient.NEXT_TAB_KEY_BIND);
-		if(alternative != null) {
+		if (alternative != null) {
 			alternative.setDown(pressed);
 			ci.cancel();
 		}
 	}
 	
 	private static KeyMapping findAlternative(InputConstants.Key key, KeyMapping binding, KeyMapping alternativeTo) {
-		Screen screen = InventoryTabs.mc.screen;
-		if(binding == alternativeTo && !InventoryTabsClient.screenSupported(screen)) {
-			for(KeyMapping value : ALL.values()) {
+		Screen screen = Minecraft.getInstance().screen;
+		if (binding == alternativeTo && !InventoryTabsClient.screenSupported(screen)) {
+			for (KeyMapping value : ALL.values()) {
 				KeyMappingMixin_SoftConflict self = (KeyMappingMixin_SoftConflict) (Object) value;
 				InputConstants.Key bound = self.key;
-				if(Objects.equals(bound, key) && value != alternativeTo) {
+				if (Objects.equals(bound, key) && value != alternativeTo) {
 					return value;
 				}
 			}
