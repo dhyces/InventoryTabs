@@ -5,6 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "inventorytabs.refmap.json",
   "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
     "CartographyTableScreenTabAdder",
     "LoomScreenTabAdder",
     "ShulkerBoxBlockInvoker",
@@ -12,12 +17,7 @@
     "TabManagerContainerImplementer",
     "VanillaScreenTabAdder",
     "accessor.AbstractContainerScreenAccessor",
-    "accessor.ScreenAccessor"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "client": [
+    "accessor.ScreenAccessor",
     "CreativeModeInventoryScreenMixin",
     "KeyBindsList$KeyEntryMixin_SoftConflict",
     "KeyMappingMixin_SoftConflict",

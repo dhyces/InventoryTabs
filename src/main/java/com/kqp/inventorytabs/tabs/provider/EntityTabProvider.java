@@ -1,14 +1,15 @@
 package com.kqp.inventorytabs.tabs.provider;
 
+import java.util.List;
+
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.EntityUtil;
+
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 public abstract class EntityTabProvider implements TabProvider {
     public static final int SEARCH_DISTANCE = 5;
@@ -16,7 +17,7 @@ public abstract class EntityTabProvider implements TabProvider {
     @Override
     public void addAvailableTabs(AbstractClientPlayer player, List<Tab> tabs) {
         Level level = player.level;
-        var reach = player.getReachDistance();
+        var reach = player.getBlockReach();
         List<Entity> entityList = level.getEntities(player, EntityUtil.aabbFromPlayer(player, reach));
 
         for (Entity entity : entityList) {

@@ -1,7 +1,8 @@
 package com.kqp.inventorytabs.tabs.tab;
 
+import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.mixin.ShulkerBoxBlockInvoker;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +20,7 @@ public class ShulkerBoxTab extends SimpleBlockTab {
 
     @Override
     public boolean shouldBeRemoved() {
-        AbstractClientPlayer player = Minecraft.getInstance().player;
+        AbstractClientPlayer player = InventoryTabs.mc.player;
 
         BlockEntity blockEntity = player.level.getBlockEntity(blockPos);
 

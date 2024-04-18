@@ -1,7 +1,10 @@
 package com.kqp.inventorytabs.init;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,8 +16,6 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import java.util.concurrent.CompletableFuture;
 
 public class InventoryTabsClient {
     public static final KeyMapping NEXT_TAB_KEY_BIND = new KeyMapping(
@@ -46,7 +47,7 @@ public class InventoryTabsClient {
     }
 
     private static void reloadTabs() {
-        Minecraft client = Minecraft.getInstance();
+        Minecraft client = InventoryTabs.mc;
         if (client.level != null) {
             if (client.screen != null) {
                 TabManagerContainer tabManagerContainer = (TabManagerContainer) client;

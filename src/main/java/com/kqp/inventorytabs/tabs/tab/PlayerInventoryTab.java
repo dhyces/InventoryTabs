@@ -1,5 +1,7 @@
 package com.kqp.inventorytabs.tabs.tab;
 
+import com.kqp.inventorytabs.init.InventoryTabs;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -16,7 +18,7 @@ public class PlayerInventoryTab extends Tab {
 
     @Override
     public void open() {
-        Minecraft client = Minecraft.getInstance();
+        Minecraft client = InventoryTabs.mc;
         if (!client.gameMode.isServerControlledInventory()) {
             client.setScreen(new InventoryScreen(client.player));
         } else {
@@ -47,7 +49,7 @@ public class PlayerInventoryTab extends Tab {
     private static ItemStack getRenderItemStack() {
         ItemStack itemStack = new ItemStack(Blocks.PLAYER_HEAD);
         itemStack.getOrCreateTag().putString("SkullOwner",
-                Minecraft.getInstance().player.getGameProfile().getName());
+        		InventoryTabs.mc.player.getGameProfile().getName());
 
         return itemStack;
     }

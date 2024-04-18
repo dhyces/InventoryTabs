@@ -1,8 +1,12 @@
 package com.kqp.inventorytabs.tabs.tab;
 
+import java.util.Objects;
+
+import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.tabs.provider.BlockTabProvider;
 import com.kqp.inventorytabs.util.BlockUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -20,8 +24,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Objects;
-
 /**
  * Generic tab for blocks.
  */
@@ -30,14 +32,14 @@ public class SimpleBlockTab extends Tab {
     public final BlockPos blockPos;
 
     public SimpleBlockTab(ResourceLocation blockId, BlockPos blockPos) {
-        super(new ItemStack(Minecraft.getInstance().level.getBlockState(blockPos).getBlock()));
+        super(new ItemStack(InventoryTabs.mc.level.getBlockState(blockPos).getBlock()));
         this.blockId = blockId;
         this.blockPos = blockPos;
     }
 
     @Override
     public void open() {
-        Minecraft client = Minecraft.getInstance();
+        Minecraft client = InventoryTabs.mc;
         BlockHitResult hitResult;
 
         if (InventoryTabsConfig.doSightChecksFlag.get()) {
@@ -48,17 +50,17 @@ public class SimpleBlockTab extends Tab {
 
         if (hitResult != null) {
             if (InventoryTabsConfig.rotatePlayer.get()) {
-                Minecraft.getInstance().player.lookAt(EntityAnchorArgument.Anchor.EYES,
+            	InventoryTabs.mc.player.lookAt(EntityAnchorArgument.Anchor.EYES,
                         Vec3.atCenterOf(blockPos));
             }
 
-            Minecraft.getInstance().gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
+            InventoryTabs.mc.gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
         }
     }
 
     @Override
     public boolean shouldBeRemoved() {
-        AbstractClientPlayer player = Minecraft.getInstance().player;
+        AbstractClientPlayer player = InventoryTabs.mc.player;
 
         if (!Objects.equals(ForgeRegistries.BLOCKS.getKey(player.level.getBlockState(blockPos).getBlock()), blockId)) {
             return true;
@@ -80,7 +82,7 @@ public class SimpleBlockTab extends Tab {
 
     @Override
     public Component getHoverText() {
-        Level world = Minecraft.getInstance().level;
+        Level world = InventoryTabs.mc.level;
 
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
 

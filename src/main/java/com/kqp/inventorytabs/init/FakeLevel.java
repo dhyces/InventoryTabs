@@ -1,6 +1,13 @@
 package com.kqp.inventorytabs.init;
 
-import net.minecraft.client.Minecraft;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -26,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LightChunk;
 import net.minecraft.world.level.chunk.LightChunkGetter;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.LevelEntityGetter;
@@ -39,18 +47,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.ticks.LevelTickAccess;
 import net.minecraft.world.ticks.ScheduledTick;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
 public class FakeLevel extends Level implements LightChunkGetter {
 
     public FakeLevel() {
-        super(new FakeWritableLevelData(), ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), Minecraft.getInstance().level.dimensionTypeRegistration(), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L, 0);
+        super((WritableLevelData)new FakeWritableLevelData(), ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), InventoryTabs.mc.level.registryAccess(), InventoryTabs.mc.level.dimensionTypeRegistration(), () -> InventoryTabs.mc.getProfiler(), true, false, 91247917248L, 0);
     }
 
     @Override
@@ -268,7 +269,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     public FeatureFlagSet enabledFeatures() {
-        return Minecraft.getInstance().level.enabledFeatures();
+        return InventoryTabs.mc.level.enabledFeatures();
     }
 
     @Override
@@ -290,7 +291,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
 
     @Nullable
     @Override
-    public BlockGetter getChunkForLighting(int pChunkX, int pChunkZ) {
+    public LightChunk getChunkForLighting(int pChunkX, int pChunkZ) {
         return null;
     }
 

@@ -1,6 +1,8 @@
 package com.kqp.inventorytabs.init;
 
 import com.kqp.inventorytabs.api.TabProviderRegistry;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -19,12 +21,16 @@ public class InventoryTabs {
     public static boolean isBigInvLoaded;
     public static boolean isPlayerExLoaded;
     public static boolean isLevelzLoaded;
+    public static Minecraft mc;
 
     public static ResourceLocation id(String path) {
         return new ResourceLocation(ID, path);
     }
 
     public InventoryTabs() {
+    	if (mc == null)
+    		mc = Minecraft.getInstance();
+    	
         var spec = new ForgeConfigSpec.Builder();
         InventoryTabsConfig.setupConfig(spec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, spec.build());
@@ -32,6 +38,8 @@ public class InventoryTabs {
         isBigInvLoaded = ModList.get().isLoaded("biginv");
         isPlayerExLoaded = ModList.get().isLoaded("playerex");
         isLevelzLoaded = ModList.get().isLoaded("levelz");
+        
+        
 
         MinecraftForge.EVENT_BUS.addListener(this::playerJoin);
         MinecraftForge.EVENT_BUS.addListener(this::datapackReload);

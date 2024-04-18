@@ -1,5 +1,15 @@
 package com.kqp.inventorytabs.mixin;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsClient;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.interf.TabManagerContainer;
@@ -9,24 +19,25 @@ import com.kqp.inventorytabs.tabs.tab.SimpleBlockTab;
 import com.kqp.inventorytabs.tabs.tab.SimpleEntityTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.kqp.inventorytabs.util.ChestUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.*;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
+import net.minecraft.client.gui.screens.inventory.CartographyTableScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.inventory.LoomScreen;
+import net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen;
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.fml.ModList;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class VanillaScreenTabAdder extends Screen implements TabRenderingHints {
@@ -38,7 +49,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
     @Inject(method = "init", at = @At("HEAD"))
     private void initRestoreStack(CallbackInfo callbackInfo) {
-        Minecraft client = Minecraft.getInstance();
+        Minecraft client = InventoryTabs.mc;
         TabManager tabManager = ((TabManagerContainer) client).getTabManager();
         if (tabManager.screenOpenedViaTab()) {
             tabManager.restoreCursorStack(client.gameMode, client.player, ((AbstractContainerScreen<?>) (Object) this).getMenu());
@@ -49,7 +60,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "init", at = @At("RETURN"))
     private void initTabRenderer(CallbackInfo callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            Minecraft client = Minecraft.getInstance();
+            Minecraft client = InventoryTabs.mc;
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
             tabManager.onScreenOpen((AbstractContainerScreen<?>) (Object) this);
@@ -115,25 +126,25 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    protected void drawBackgroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
+    protected void drawBackgroundTabs(GuiGraphics gui, int mouseX, int mouseY, float delta,
             CallbackInfo callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs(this)) {
             if (!screenDoesDumbBlock()) {
                 TabManager tabManager = TabManager.getInstance();
 
-                tabManager.tabRenderer.renderBackground(poseStack);
+                tabManager.tabRenderer.renderBackground(gui);
             }
         }
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    protected void drawForegroundTabs(PoseStack poseStack, int mouseX, int mouseY, float delta,
+    protected void drawForegroundTabs(GuiGraphics gui, int mouseX, int mouseY, float delta,
                                       CallbackInfo callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs(this)) {
             TabManager tabManager = TabManager.getInstance();
 
-            tabManager.tabRenderer.renderForeground(poseStack, mouseX, mouseY);
-            tabManager.tabRenderer.renderHoverTooltips(poseStack, mouseX, mouseY);
+            tabManager.tabRenderer.renderForeground(gui, mouseX, mouseY);
+            tabManager.tabRenderer.renderHoverTooltips(gui, mouseX, mouseY);
         }
     }
 
