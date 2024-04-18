@@ -49,7 +49,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
 
     @Inject(method = "init", at = @At("HEAD"))
     private void initRestoreStack(CallbackInfo callbackInfo) {
-        Minecraft client = InventoryTabs.mc;
+        Minecraft client = Minecraft.getInstance();
         TabManager tabManager = ((TabManagerContainer) client).getTabManager();
         if (tabManager.screenOpenedViaTab()) {
             tabManager.restoreCursorStack(client.gameMode, client.player, ((AbstractContainerScreen<?>) (Object) this).getMenu());
@@ -60,7 +60,7 @@ public abstract class VanillaScreenTabAdder extends Screen implements TabRenderi
     @Inject(method = "init", at = @At("RETURN"))
     private void initTabRenderer(CallbackInfo callbackInfo) {
         if (InventoryTabsClient.screenSupported(this)) {
-            Minecraft client = InventoryTabs.mc;
+            Minecraft client = Minecraft.getInstance();
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
             tabManager.onScreenOpen((AbstractContainerScreen<?>) (Object) this);

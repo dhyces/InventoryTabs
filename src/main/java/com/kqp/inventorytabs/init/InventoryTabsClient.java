@@ -47,7 +47,7 @@ public class InventoryTabsClient {
     }
 
     private static void reloadTabs() {
-        Minecraft client = InventoryTabs.mc;
+        Minecraft client = Minecraft.getInstance();
         if (client.level != null) {
             if (client.screen != null) {
                 TabManagerContainer tabManagerContainer = (TabManagerContainer) client;

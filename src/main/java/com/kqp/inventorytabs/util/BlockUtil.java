@@ -2,6 +2,7 @@ package com.kqp.inventorytabs.util;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
@@ -55,7 +56,7 @@ public class BlockUtil {
             return null;
         }
 
-        BlockHitResult result = blockClip(InventoryTabs.mc.player, playerHead, blockVec);
+        BlockHitResult result = blockClip(Minecraft.getInstance().player, playerHead, blockVec);
 
         if (result.getType() == HitResult.Type.BLOCK && result.getBlockPos().equals(pos)) {
             return result;

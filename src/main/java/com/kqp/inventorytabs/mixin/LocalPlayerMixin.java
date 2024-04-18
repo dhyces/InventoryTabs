@@ -1,5 +1,6 @@
 package com.kqp.inventorytabs.mixin;
 
+import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,6 +16,6 @@ public class LocalPlayerMixin {
 
     @Inject(method = "sendOpenInventory", at = @At("HEAD"))
     private void inventorytabs_sendOpenInventory(CallbackInfo ci) {
-        ((TabManagerContainer)InventoryTabs.mc).getTabManager().inventoryTabModified = true;
+        ((TabManagerContainer) Minecraft.getInstance()).getTabManager().inventoryTabModified = true;
     }
 }

@@ -10,6 +10,7 @@ import com.kqp.inventorytabs.tabs.TabManager;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -126,7 +127,7 @@ public class TabRenderer {
             }
 
             AbstractContainerScreen<?> currentScreen = tabManager.getCurrentScreen();
-            Font font = mc.font;
+            Font font = Minecraft.getInstance().font;
 
             int height = ((AbstractContainerScreenAccessor) currentScreen).getImageHeight();
             int oX = currentScreen.width;
@@ -158,7 +159,7 @@ public class TabRenderer {
                 Rectangle itemRec = new Rectangle(tabRenderInfo.itemX, tabRenderInfo.itemY, 16, 16);
 
                 if (itemRec.contains(mouseX, mouseY)) {
-                    gui.renderTooltip(InventoryTabs.mc.font, tabRenderInfo.tabReference.getHoverText(),
+                    gui.renderTooltip(Minecraft.getInstance().font, tabRenderInfo.tabReference.getHoverText(),
                             (int) mouseX, (int) mouseY);
                 }
             }

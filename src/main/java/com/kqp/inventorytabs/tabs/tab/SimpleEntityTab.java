@@ -6,6 +6,7 @@ import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.init.InventoryTabsConfig;
 import com.kqp.inventorytabs.util.EntityUtil;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +27,8 @@ public class SimpleEntityTab extends Tab {
 
     @Override
     public void open() {
-        AbstractClientPlayer player = InventoryTabs.mc.player;
-        InventoryTabs.mc.gameMode.interact(player, entity, player.getUsedItemHand());
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        Minecraft.getInstance().gameMode.interact(player, entity, player.getUsedItemHand());
     }
 
     @Override
@@ -35,13 +36,13 @@ public class SimpleEntityTab extends Tab {
         if (entity.isRemoved()) {
             return true;
         }
-        var player = InventoryTabs.mc.player;
+        var player = Minecraft.getInstance().player;
         if (InventoryTabsConfig.doSightChecksFlag.get()) {
             if (!EntityUtil.canInteract(player, entity, player.getEntityReach())) {
                 return true;
             }
         }
-        return entity.position().distanceTo(InventoryTabs.mc.player.position()) > player.getEntityReach();
+        return entity.position().distanceTo(Minecraft.getInstance().player.position()) > player.getEntityReach();
     }
 
     @Override

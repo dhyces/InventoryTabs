@@ -32,14 +32,14 @@ public class SimpleBlockTab extends Tab {
     public final BlockPos blockPos;
 
     public SimpleBlockTab(ResourceLocation blockId, BlockPos blockPos) {
-        super(new ItemStack(InventoryTabs.mc.level.getBlockState(blockPos).getBlock()));
+        super(new ItemStack(Minecraft.getInstance().level.getBlockState(blockPos).getBlock()));
         this.blockId = blockId;
         this.blockPos = blockPos;
     }
 
     @Override
     public void open() {
-        Minecraft client = InventoryTabs.mc;
+        Minecraft client = Minecraft.getInstance();
         BlockHitResult hitResult;
 
         if (InventoryTabsConfig.doSightChecksFlag.get()) {
@@ -50,17 +50,17 @@ public class SimpleBlockTab extends Tab {
 
         if (hitResult != null) {
             if (InventoryTabsConfig.rotatePlayer.get()) {
-            	InventoryTabs.mc.player.lookAt(EntityAnchorArgument.Anchor.EYES,
+            	Minecraft.getInstance().player.lookAt(EntityAnchorArgument.Anchor.EYES,
                         Vec3.atCenterOf(blockPos));
             }
 
-            InventoryTabs.mc.gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
+            Minecraft.getInstance().gameMode.useItemOn(client.player, InteractionHand.MAIN_HAND, hitResult);
         }
     }
 
     @Override
     public boolean shouldBeRemoved() {
-        AbstractClientPlayer player = InventoryTabs.mc.player;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
 
         if (!Objects.equals(ForgeRegistries.BLOCKS.getKey(player.level.getBlockState(blockPos).getBlock()), blockId)) {
             return true;
@@ -82,7 +82,7 @@ public class SimpleBlockTab extends Tab {
 
     @Override
     public Component getHoverText() {
-        Level world = InventoryTabs.mc.level;
+        Level world = Minecraft.getInstance().level;
 
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
 

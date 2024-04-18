@@ -2,6 +2,7 @@ package com.kqp.inventorytabs.tabs.tab;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -18,8 +19,8 @@ public class InventoryTab extends Tab {
     @Override
     public void open() {
         System.out.println("TESTING: Opening inventory tab");
-        AbstractClientPlayer player = InventoryTabs.mc.player;
-        Level level = InventoryTabs.mc.level;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        Level level = Minecraft.getInstance().level;
         System.out.println("Player: "+ player);
         System.out.println("Level: "+ level);
         System.out.println("Item: "+ item);
@@ -32,7 +33,7 @@ public class InventoryTab extends Tab {
 
     @Override
     public boolean shouldBeRemoved() {
-        AbstractClientPlayer player = InventoryTabs.mc.player;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
         return (player == null || !player.getInventory().contains(new ItemStack(item)));
     }
 

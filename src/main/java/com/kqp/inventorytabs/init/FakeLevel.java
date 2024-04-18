@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +52,7 @@ import net.minecraft.world.ticks.ScheduledTick;
 public class FakeLevel extends Level implements LightChunkGetter {
 
     public FakeLevel() {
-        super((WritableLevelData)new FakeWritableLevelData(), ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), InventoryTabs.mc.level.registryAccess(), InventoryTabs.mc.level.dimensionTypeRegistration(), () -> InventoryTabs.mc.getProfiler(), true, false, 91247917248L, 0);
+        super((WritableLevelData)new FakeWritableLevelData(), ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), Minecraft.getInstance().level.registryAccess(), Minecraft.getInstance().level.dimensionTypeRegistration(), () -> Minecraft.getInstance().getProfiler(), true, false, 91247917248L, 0);
     }
 
     @Override
@@ -269,7 +270,7 @@ public class FakeLevel extends Level implements LightChunkGetter {
     @NotNull
     @Override
     public FeatureFlagSet enabledFeatures() {
-        return InventoryTabs.mc.level.enabledFeatures();
+        return Minecraft.getInstance().level.enabledFeatures();
     }
 
     @Override

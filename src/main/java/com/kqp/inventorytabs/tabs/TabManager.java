@@ -75,7 +75,7 @@ public class TabManager {
         // Remove old ones
         tabs.removeIf(Tab::shouldBeRemoved);
 
-        AbstractClientPlayer player = InventoryTabs.mc.player;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
 
         if (player != null && player.isAlive()) {
             // Add new tabs
@@ -205,14 +205,14 @@ public class TabManager {
     public void onTabClick(Tab tab) {
         // Push current mouse position
         // This is to persist mouse position across screens
-        if (!InventoryTabs.mc.player.isCreative() || !(tab instanceof PlayerInventoryTab)) {
+        if (!Minecraft.getInstance().player.isCreative() || !(tab instanceof PlayerInventoryTab)) {
             MouseUtil.push();
         }
 
         // Set tab open flag
         tabOpenedRecently = true;
 
-        Minecraft client = InventoryTabs.mc;
+        Minecraft client = Minecraft.getInstance();
         AbstractContainerMenu handler = client.player.containerMenu;
         this.prevCursorStackSlot = -1;
 
@@ -334,11 +334,11 @@ public class TabManager {
     }
 
     public static TabManager getInstance() {
-        return ((TabManagerContainer) InventoryTabs.mc).getTabManager();
+        return ((TabManagerContainer) Minecraft.getInstance()).getTabManager();
     }
 
     public static void playClick() {
-    	InventoryTabs.mc.getSoundManager()
+    	Minecraft.getInstance().getSoundManager()
                 .play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

@@ -23,7 +23,7 @@ public class LoomScreenTabAdder {
     protected void drawBackgroundTabs(GuiGraphics gui, float delta, int mouseX, int mouseY,
                                       CallbackInfo callbackInfo) {
         if (InventoryTabsClient.shouldRenderTabs((LoomScreen)(Object)this)) {
-            Minecraft client = InventoryTabs.mc;
+            Minecraft client = Minecraft.getInstance();
             TabManager tabManager = ((TabManagerContainer) client).getTabManager();
 
             tabManager.tabRenderer.renderBackground(gui);

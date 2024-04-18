@@ -2,6 +2,7 @@ package com.kqp.inventorytabs.util;
 
 import java.nio.DoubleBuffer;
 
+import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -25,7 +26,7 @@ public class MouseUtil {
 
     public static void tryPop() {
         if (mouseX != -1D && mouseY != -1D) {
-            InputConstants.grabOrReleaseMouse(InventoryTabs.mc.getWindow().getWindow(), 212993, mouseX,
+            InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow().getWindow(), 212993, mouseX,
                     mouseY);
 
             mouseX = -1D;
@@ -35,14 +36,14 @@ public class MouseUtil {
 
     public static double getMouseX() {
         DoubleBuffer mouseBuf = BufferUtils.createDoubleBuffer(1);
-        GLFW.glfwGetCursorPos(InventoryTabs.mc.getWindow().getWindow(), mouseBuf, null);
+        GLFW.glfwGetCursorPos(Minecraft.getInstance().getWindow().getWindow(), mouseBuf, null);
 
         return mouseBuf.get(0);
     }
 
     public static double getMouseY() {
         DoubleBuffer mouseBuf = BufferUtils.createDoubleBuffer(1);
-        GLFW.glfwGetCursorPos(InventoryTabs.mc.getWindow().getWindow(), null, mouseBuf);
+        GLFW.glfwGetCursorPos(Minecraft.getInstance().getWindow().getWindow(), null, mouseBuf);
 
         return mouseBuf.get(0);
     }

@@ -141,7 +141,7 @@ public class TabProviderRegistry {
             }
         });
 
-        Minecraft client = InventoryTabs.mc;
+        Minecraft client = Minecraft.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
         tabManagerContainer.getTabManager().removeTabs();
         LOGGER.info(configMsg.equals("save") ? "InventoryTabs: Config saved!": "InventoryTabs: Config %sed!".formatted(configMsg));
