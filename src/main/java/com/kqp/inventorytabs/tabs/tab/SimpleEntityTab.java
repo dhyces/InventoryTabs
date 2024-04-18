@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SimpleEntityTab extends Tab {
@@ -20,7 +21,7 @@ public class SimpleEntityTab extends Tab {
     public final Entity entity;
 
     public SimpleEntityTab(Entity entity) {
-        super(entity.getPickResult() != null ? entity.getPickResult() : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("barrier"))));
+        super(entity.getPickResult() != null ? entity.getPickResult() : new ItemStack(Items.BARRIER));
         this.entity = entity;
         this.entityId = EntityType.getKey(entity.getType());
     }
@@ -42,6 +43,7 @@ public class SimpleEntityTab extends Tab {
                 return true;
             }
         }
+        // TODO: fix this, entities can interact with entities that are farther and this doesn't catch it
         return entity.position().distanceTo(Minecraft.getInstance().player.position()) > player.getEntityReach();
     }
 
