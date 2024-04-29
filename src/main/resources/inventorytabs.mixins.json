@@ -19,8 +19,6 @@
     "accessor.AbstractContainerScreenAccessor",
     "accessor.ScreenAccessor",
     "CreativeModeInventoryScreenMixin",
-    "KeyBindsList$KeyEntryMixin_SoftConflict",
-    "KeyMappingMixin_SoftConflict",
     "LocalPlayerMixin",
     "ScreenMixin"
   ]
